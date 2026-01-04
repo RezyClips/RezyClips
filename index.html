@@ -809,6 +809,8 @@
                 <div id="adminPhotoGrid" class="admin-photo-grid">
                     <!-- JS injects images here -->
                 </div>
+                <!-- Load More Button for Admin Grid -->
+                <button id="adminLoadMore" class="cta-button" style="width:100%; margin-bottom:15px; display:none; padding:10px; font-size:0.8rem;" onclick="loadMoreAdminPhotos()">Load More</button>
                 
                 <div class="admin-form">
                     <input type="text" id="editPin" placeholder="Enter Batch PIN (Leave blank to unlock)">
@@ -1419,6 +1421,11 @@
         let currentFilter = 'all'; // Current category filter
         let currentSearch = ''; // Current search text
         let selectedPhotoIds = new Set(); // Track selected photos for batch editing
+        
+        // Admin Batch Variables
+        let adminBatchIndex = 0;
+        let adminFilteredPhotos = [];
+        const ADMIN_BATCH_SIZE = 50;
 
         // --- HERO SLIDER LOGIC ---
         function initHeroSlider() {
@@ -1644,7 +1651,10 @@
         function populateEditGrid() {
             const grid = document.getElementById('adminPhotoGrid');
             const filter = document.getElementById('adminEditFilter').value;
+            
+            // Reset grid and batching
             grid.innerHTML = '';
+            adminBatchIndex = 0;
             
             // Filter list based on dropdown
             let visiblePhotos = photos;
@@ -1653,18 +1663,46 @@
             }
             
             // Sort by latest added (usually higher ID)
-            const sortedPhotos = [...visiblePhotos].sort((a, b) => b.id - a.id);
+            adminFilteredPhotos = [...visiblePhotos].sort((a, b) => b.id - a.id);
             
-            sortedPhotos.forEach(p => {
+            // Load first batch
+            loadMoreAdminPhotos();
+        }
+
+        function loadMoreAdminPhotos() {
+            const grid = document.getElementById('adminPhotoGrid');
+            const loadMoreBtn = document.getElementById('adminLoadMore');
+            
+            // Get next batch of photos
+            const nextBatch = adminFilteredPhotos.slice(adminBatchIndex, adminBatchIndex + ADMIN_BATCH_SIZE);
+            
+            // Use DocumentFragment for performance (single reflow)
+            const fragment = document.createDocumentFragment();
+
+            nextBatch.forEach(p => {
                 const img = document.createElement('img');
                 img.src = p.src;
+                img.loading = "lazy"; // CRITICAL: Lazy load images
                 img.className = 'admin-photo-thumb';
+                img.dataset.id = p.id; // Store ID on element for selection logic
+                
                 if(selectedPhotoIds.has(p.id)) {
                     img.classList.add('selected');
                 }
                 img.onclick = () => togglePhotoSelection(p.id, img);
-                grid.appendChild(img);
+                fragment.appendChild(img);
             });
+
+            grid.appendChild(fragment);
+            adminBatchIndex += ADMIN_BATCH_SIZE;
+
+            // Update Load More Button visibility
+            if(adminBatchIndex >= adminFilteredPhotos.length) {
+                loadMoreBtn.style.display = 'none';
+            } else {
+                loadMoreBtn.style.display = 'block';
+                loadMoreBtn.textContent = `Load More (${adminFilteredPhotos.length - adminBatchIndex} remaining)`;
+            }
         }
 
         function togglePhotoSelection(id, imgElement) {
@@ -1678,19 +1716,20 @@
         }
 
         function selectAllVisible() {
-            const filter = document.getElementById('adminEditFilter').value;
-            let visiblePhotos = photos;
-            if (filter !== 'all') {
-                visiblePhotos = photos.filter(p => p.category === filter);
-            }
+            // Select all matching the CURRENT filter (adminFilteredPhotos)
+            adminFilteredPhotos.forEach(p => selectedPhotoIds.add(p.id));
             
-            visiblePhotos.forEach(p => selectedPhotoIds.add(p.id));
-            populateEditGrid(); // Re-render to show selection
+            // Visually update ONLY what's currently rendered to save performance
+            const renderedImages = document.querySelectorAll('.admin-photo-thumb');
+            renderedImages.forEach(img => img.classList.add('selected'));
         }
 
         function deselectAll() {
             selectedPhotoIds.clear();
-            populateEditGrid();
+            
+            // Visually update currently rendered
+            const renderedImages = document.querySelectorAll('.admin-photo-thumb');
+            renderedImages.forEach(img => img.classList.remove('selected'));
         }
 
         function generateBatchUpdateCode() {
