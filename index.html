@@ -556,7 +556,28 @@
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.1);
             max-height: 90vh;
             overflow-y: auto;
+            position: relative;
+            overscroll-behavior: contain; /* Prevents body scroll */
         }
+        
+        /* NEW CLOSE BUTTON STYLE */
+        .admin-close-top {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            transition: color 0.3s;
+        }
+        .admin-close-top:hover {
+            color: white;
+        }
+
         .admin-content h2 { margin-bottom: 20px; color: var(--accent); font-style: italic; }
         
         /* Admin Tabs */
@@ -754,6 +775,7 @@
     <!-- ADMIN MODAL -->
     <div class="admin-modal" id="adminModal">
         <div class="admin-content">
+            <button class="admin-close-top" onclick="toggleAdmin()">&times;</button>
             <h2>Admin Generator</h2>
             <div class="admin-tabs">
                 <div class="admin-tab active" onclick="switchAdminTab('add')">Add New</div>
