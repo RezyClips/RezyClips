@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RezyClips Prime Shots - Professional Sports Photography Portfolio capturing the decisive moments in sports.">
+    <title>RezyClips Prime Shots | Capturing the Moment</title>
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --bg-color: #050505; /* Slightly deeper black */
+            --card-bg: #121212;
+            --text-main: #ffffff;
+            --text-muted: #a3a3a3;
+            /* PURPLE ACCENTS */
+            --accent: #a855f7; /* Vibrant Sporty Purple */
+            --accent-hover: #7e22ce; /* Darker Purple for hover */
+            --nav-height: 70px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; color: inherit; transition: color 0.3s; }
+        ul { list-style: none; }
+        img { display: block; width: 100%; height: auto; }
+        button { cursor: pointer; border: none; outline: none; font-family: inherit; }
+
+        /* --- NAVIGATION --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #222;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900; /* Extra bold */
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            font-style: italic; /* Sporty tilt */
+        }
+        .logo span { color: var(--accent); }
+
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a {
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+        .nav-links a:hover { 
+            color: var(--text-main); 
+            text-shadow: 0 0 10px rgba(168, 85, 247, 0.5); /* Purple glow */
+        }
+
+        /* --- HERO SECTION WITH SLIDER --- */
+        .hero {
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            background-color: var(--bg-color);
+            margin-top: var(--nav-height);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background Slider Styles */
+        .hero-bg-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+            filter: grayscale(10%) contrast(110%); /* High contrast for sporty feel */
+        }
+        
+        .hero-slide.active {
+            opacity: 0.6; /* Slightly brighter to see the action */
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Gradient: Dark edges, Purple center glow */
+            background: radial-gradient(circle at center, rgba(168, 85, 247, 0.2) 0%, var(--bg-color) 90%);
+            z-index: 1;
+        }
+
+        /* Hero Content (Text) */
+        .hero h1, .hero p, .hero .cta-button {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 20px;
+            max-width: 900px;
+            font-style: italic; /* Sporty tilt */
+            text-transform: uppercase;
+            text-shadow: 0 4px 30px rgba(0,0,0,0.8);
+        }
+        .hero h1 span {
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: #e5e5e5;
+            max-width: 600px;
+            margin-bottom: 40px;
+            font-weight: 500;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+
+        .cta-button {
+            padding: 15px 40px;
+            background-color: var(--accent);
+            color: white;
+            font-weight: 800;
+            border-radius: 4px; /* Boxier for sporty look */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+            transform: skewX(-10deg); /* Speed skew */
+        }
+        
+        /* Un-skew text inside button */
+        .cta-button-text {
+            display: inline-block;
+            transform: skewX(10deg);
+        }
+
+        .cta-button:hover {
+            background-color: var(--accent-hover);
+            transform: skewX(-10deg) translateY(-2px);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+        }
+
+        /* --- FILTERS --- */
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 40px 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            border: 1px solid #333;
+            padding: 10px 25px;
+            border-radius: 4px; /* Boxier */
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+        }
+
+        /* --- GALLERY GRID --- */
+        .gallery-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 20px 80px;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            position: relative;
+            aspect-ratio: 2/3;
+            overflow: hidden;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: var(--card-bg);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s forwards;
+            border: 1px solid #222;
+            transition: border-color 0.3s;
+        }
+        
+        .gallery-item:hover {
+            border-color: var(--accent);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
+        }
+
+        .thumb-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.15); /* Very Subtle */
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 2;
+            text-transform: uppercase;
+            user-select: none;
+            width: 100%;
+            text-align: center;
+        }
+
+        .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px 20px;
+            background: linear-gradient(to top, rgba(168, 85, 247, 0.9), transparent); /* Purple tint gradient */
+            transform: translateY(100%);
+            transition: transform 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 3;
+        }
+
+        .gallery-item:hover img { transform: scale(1.1); }
+        .gallery-item:hover .overlay { transform: translateY(0); }
+
+        .item-category {
+            font-size: 0.8rem;
+            color: white; /* White text on purple background */
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .item-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            font-style: italic;
+            color: white;
+        }
+
+        /* --- LIGHTBOX --- */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: none; /* Flex when active */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .lightbox-img {
+            max-height: 70vh;
+            max-width: 100%;
+            border-radius: 4px;
+            box-shadow: 0 0 50px rgba(168, 85, 247, 0.2); /* Purple Glow */
+            user-select: none; /* Prevent selection */
+        }
+
+        /* WATERMARK STYLE - REPEATING PATTERN */
+        .watermark-overlay {
+            position: absolute;
+            inset: 0; /* Covers the entire lightbox image area */
+            z-index: 10;
+            pointer-events: none;
+            user-select: none;
+            /* SVG Data URI Pattern */
+            background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='50%25' y='50%25' font-family='Arial, sans-serif' font-weight='900' font-size='18' fill='rgba(255, 255, 255, 0.18)' transform='rotate(-30 100 100)' text-anchor='middle' dominant-baseline='middle'%3EREZYCLIPS%3C/text%3E%3C/svg%3E");
+            background-repeat: repeat;
+        }
+
+        .lightbox-details {
+            margin-top: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .lightbox h3 { font-size: 1.8rem; margin-bottom: 5px; font-style: italic; font-weight: 800; }
+        .lightbox p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px; letter-spacing: 1px; text-transform: uppercase;}
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 30px;
+            background: var(--accent);
+            color: white;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            transition: background 0.3s, transform 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .download-btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
+        .download-btn.locked { background: #333; color: #888; }
+        .download-btn.locked:hover { background: #444; }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 2rem;
+            color: white;
+            background: transparent;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .close-btn:hover { color: var(--accent); }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: background 0.3s, color 0.3s;
+        }
+        .nav-btn:hover { background: var(--accent); color: white; }
+        .prev-btn { left: 30px; }
+        .next-btn { right: 30px; }
+
+        /* --- FOOTER & ADMIN --- */
+        footer {
+            padding: 50px 20px;
+            text-align: center;
+            border-top: 1px solid #222;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            position: relative;
+        }
+        
+        .social-section h3 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-style: italic;
+            font-weight: 800;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .social-btn {
+            display: inline-block;
+            padding: 10px 25px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        .social-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+        }
+
+        .admin-trigger {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            opacity: 0.3;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        .admin-trigger:hover { opacity: 1; }
+
+        /* --- ADMIN MODAL --- */
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+        .admin-modal.active { display: flex; }
+        
+        .admin-content {
+            background: #121212;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid #333;
+            box-shadow: 0 0 40px rgba(168, 85, 247, 0.1);
+        }
+        .admin-content h2 { margin-bottom: 20px; color: var(--accent); font-style: italic; }
+        
+        /* Admin Tabs */
+        .admin-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #333;
+        }
+        .admin-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            color: #888;
+            border-bottom: 2px solid transparent;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+        .admin-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+        .admin-panel {
+            display: none;
+        }
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-form input, .admin-form select, .admin-form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: #050505;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 4px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        .admin-form input:focus, .admin-form select:focus, .admin-form textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .code-output {
+            background: #000;
+            padding: 15px;
+            font-family: monospace;
+            color: #a855f7;
+            margin-top: 20px;
+            word-break: break-all;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            border: 1px solid #333;
+        }
+
+        /* --- ANIMATIONS & MEDIA QUERIES --- */
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.8rem; }
+            .nav-links { display: none; } 
+            .lightbox-img { max-height: 60vh; }
+            .nav-btn { width: 40px; height: 40px; font-size: 1rem; }
+            .prev-btn { left: 10px; }
+            .next-btn { right: 10px; }
+            .social-links { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header>
+        <div class="logo">RezyClips <span>Prime Shots</span></div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- HERO (Dynamic Background) -->
+    <section id="home" class="hero">
+        <div class="hero-bg-slider" id="hero-slider">
+            <!-- JS will inject images here -->
+        </div>
+        <div class="hero-overlay"></div>
+        
+        <h1>CAPTURING THE<br><span>MOMENT</span></h1>
+        <p>Professional sports photography and videography specializing in high-speed action, emotion, and the spirit of competition.</p>
+        <a href="#gallery" class="cta-button">
+            <span class="cta-button-text">View Portfolio</span>
+        </a>
+    </section>
+
+    <!-- GALLERY FILTERS -->
+    <div id="gallery" class="filters">
+        <button class="filter-btn active" data-filter="all">All Sports</button>
+        <button class="filter-btn" data-filter="Football">Football</button>
+        <button class="filter-btn" data-filter="Basketball">Basketball</button>
+        <button class="filter-btn" data-filter="Soccer">Soccer</button>
+        <button class="filter-btn" data-filter="Track">Track</button>
+        <button class="filter-btn" data-filter="Motorsports">Motorsports</button>
+    </div>
+
+    <!-- GALLERY GRID -->
+    <div class="gallery-container">
+        <div class="gallery" id="gallery-grid">
+            <!-- JS will populate this -->
+        </div>
+    </div>
+
+    <!-- FOOTER / CONTACT -->
+    <footer id="contact">
+        <div class="social-section">
+            <h3>Connect With Me</h3>
+            <div class="social-links">
+                <a href="https://instagram.com/RezyClips" target="_blank" class="social-btn">Instagram</a>
+                <a href="https://twitter.com/RezyClips" target="_blank" class="social-btn">Twitter / X</a>
+                <a href="mailto:isidro2430@gmail.com" class="social-btn">Email Me</a>
+            </div>
+        </div>
+        <p>&copy; 2026 RezyClips Prime Shots. All rights reserved.</p>
+        
+        <!-- HIDDEN ADMIN TRIGGER -->
+        <div class="admin-trigger" onclick="toggleAdmin()">🔒</div>
+    </footer>
+
+    <!-- LIGHTBOX OVERLAY -->
+    <div class="lightbox" id="lightbox">
+        <button class="close-btn" id="lightbox-close">&times;</button>
+        <button class="nav-btn prev-btn" id="lightbox-prev">&#10094;</button>
+        <button class="nav-btn next-btn" id="lightbox-next">&#10095;</button>
+        
+        <div class="lightbox-content">
+            <!-- Watermark Overlay (Pattern controlled by CSS) -->
+            <div class="watermark-overlay"></div>
+            
+            <img src="" alt="" class="lightbox-img" id="lightbox-img" oncontextmenu="return false;">
+            <div class="lightbox-details">
+                <h3 id="lightbox-title">Title</h3>
+                <p id="lightbox-desc">Category | Location</p>
+                <!-- Changed to button for custom logic -->
+                <button class="download-btn" id="lightbox-download">
+                    Download High-Res
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN MODAL -->
+    <div class="admin-modal" id="adminModal">
+        <div class="admin-content">
+            <h2>Admin Generator</h2>
+            <div class="admin-tabs">
+                <div class="admin-tab active" onclick="switchAdminTab('add')">Add New</div>
+                <div class="admin-tab" onclick="switchAdminTab('edit')">Edit Existing</div>
+            </div>
+
+            <!-- ADD NEW PANEL -->
+            <div id="panel-add" class="admin-panel active">
+                <p style="font-size:0.8rem; color:#888; margin-bottom:15px;">
+                    Generate code for new photos. 1. Fill details. 2. Paste list of URLs. 3. Copy code. 4. Paste into index.html.
+                </p>
+                <div class="admin-form">
+                    <input type="text" id="adminTitle" placeholder="Photo Title (e.g. Touchdown)">
+                    <select id="adminCategory">
+                        <option value="Football">Football</option>
+                        <option value="Basketball">Basketball</option>
+                        <option value="Soccer">Soccer</option>
+                        <option value="Track">Track</option>
+                        <option value="Motorsports">Motorsports</option>
+                        <option value="Tennis">Tennis</option>
+                        <option value="Baseball">Baseball</option>
+                    </select>
+                    <input type="text" id="adminDesc" placeholder="Description (e.g. Finals Match)">
+                    <input type="text" id="adminPin" placeholder="Download PIN (Optional)">
+                    <textarea id="adminUrl" rows="5" placeholder="Image URLs (Paste multiple links, one per line)"></textarea>
+                    <button class="cta-button" style="width:100%" onclick="generateCode()">
+                        <span class="cta-button-text">Generate Code</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- EDIT EXISTING PANEL -->
+            <div id="panel-edit" class="admin-panel">
+                <p style="font-size:0.8rem; color:#888; margin-bottom:15px;">
+                    Select an existing photo to add a PIN or update details. It will generate a replacement code block.
+                </p>
+                <div class="admin-form">
+                    <select id="editPhotoSelect" onchange="loadPhotoForEdit()">
+                        <option value="">Select a Photo...</option>
+                        <!-- Populated by JS -->
+                    </select>
+                    <input type="text" id="editTitle" placeholder="Title">
+                    <input type="text" id="editPin" placeholder="Download PIN (Enter to lock)">
+                    <button class="cta-button" style="width:100%" onclick="generateUpdatedCode()">
+                        <span class="cta-button-text">Generate Update</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="code-output" id="codeOutput" style="display:none;"></div>
+            <button onclick="toggleAdmin()" style="margin-top:15px; background:none; color:#888; width:100%; border:none; cursor:pointer;">Close</button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        /* ================================================================
+           HOW TO ADD PHOTOS MANUALLY
+           ================================================================
+           1. Scroll down to the "photos" list below.
+           2. Copy one of the blocks starting with { and ending with },
+           3. Paste it at the top of the list.
+           4. Change the 'src', 'title', and 'category'.
+           ================================================================
+        */
+
+        const photos = [
+            // --- YOUR ADDED PHOTOS ---
+            {
+                id: 1767511015840,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/XxcK4n6j/IMG-9732.jpg",
+                full: "https://i.ibb.co/XxcK4n6j/IMG-9732.jpg"
+            },
+            {
+                id: 1767511730054,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/k60znqXg/IMG-9863.jpg",
+                full: "https://i.ibb.co/k60znqXg/IMG-9863.jpg"
+            },
+            {
+                id: 1767511840037,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/rRJmp8PS/IMG-9717.jpg",
+                full: "https://i.ibb.co/rRJmp8PS/IMG-9717.jpg"
+            },
+            {
+                id: 1767511936845,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/W48HQ0bP/IMG-9700.jpg",
+                full: "https://i.ibb.co/W48HQ0bP/IMG-9700.jpg"
+            },
+            {
+                id: 1767511966241,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/yF9Pffzf/IMG-9245.jpg",
+                full: "https://i.ibb.co/yF9Pffzf/IMG-9245.jpg"
+            },
+            {
+                id: 1767511986550,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/FLhLb5gB/IMG-9000.jpg",
+                full: "https://i.ibb.co/FLhLb5gB/IMG-9000.jpg"
+            },
+            {
+                id: 1767512085045,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/fY33PtrP/IMG-8977.jpg",
+                full: "https://i.ibb.co/fY33PtrP/IMG-8977.jpg"
+            },
+            {
+                id: 1767512106839,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/spMwdc5g/IMG-8947.jpg",
+                full: "https://i.ibb.co/spMwdc5g/IMG-8947.jpg"
+            },
+            {
+                id: 1767512137896,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/nMgC4Dq6/IMG-8936.jpg",
+                full: "https://i.ibb.co/nMgC4Dq6/IMG-8936.jpg"
+            },
+            {
+                id: 1767512156213,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/DHZq6Tvb/IMG-8831.jpg",
+                full: "https://i.ibb.co/DHZq6Tvb/IMG-8831.jpg"
+            },
+            {
+                id: 1767512176151,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/h5GZnFD/IMG-8531.jpg",
+                full: "https://i.ibb.co/h5GZnFD/IMG-8531.jpg"
+            },
+            {
+                id: 1767512195072,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/9mz19vxn/IMG-8477.jpg",
+                full: "https://i.ibb.co/9mz19vxn/IMG-8477.jpg"
+            },
+            {
+                id: 1767512294711,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/p6pxTVfj/IMG-8473.jpg",
+                full: "https://i.ibb.co/p6pxTVfj/IMG-8473.jpg"
+            },
+            {
+                id: 1767512319054,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/BKTYHg1v/IMG-8466.jpg",
+                full: "https://i.ibb.co/BKTYHg1v/IMG-8466.jpg"
+            },
+            {
+                id: 1767512350058,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/1J8v8VDH/IMG-8461.jpg",
+                full: "https://i.ibb.co/1J8v8VDH/IMG-8461.jpg"
+            },
+            {
+                id: 1767512369529,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/ymf0rMLs/IMG-8445.jpg",
+                full: "https://i.ibb.co/ymf0rMLs/IMG-8445.jpg"
+            },
+            {
+                id: 1767512385849,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/PvY342t1/IMG-8424.jpg",
+                full: "https://i.ibb.co/PvY342t1/IMG-8424.jpg"
+            },
+            {
+                id: 1767512401624,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/JFcSh4tY/IMG-8397.jpg",
+                full: "https://i.ibb.co/JFcSh4tY/IMG-8397.jpg"
+            },
+            {
+                id: 1767512538275,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/hxgJnYdr/IMG-8372.jpg",
+                full: "https://i.ibb.co/hxgJnYdr/IMG-8372.jpg"
+            },
+            {
+                id: 1767512555603,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/7JQZMg1M/IMG-8311.jpg",
+                full: "https://i.ibb.co/7JQZMg1M/IMG-8311.jpg"
+            },
+            {
+                id: 1767512574548,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/tM8qMTHx/IMG-8279.jpg",
+                full: "https://i.ibb.co/tM8qMTHx/IMG-8279.jpg"
+            },
+            {
+                id: 1767512594819,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/YTRtcZX3/IMG-8261.jpg",
+                full: "https://i.ibb.co/YTRtcZX3/IMG-8261.jpg"
+            },
+            {
+                id: 1767512610082,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/p6rp9pLk/IMG-8235.jpg",
+                full: "https://i.ibb.co/p6rp9pLk/IMG-8235.jpg"
+            },
+            {
+                id: 1767512625522,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/hx9xgSNt/IMG-8151.jpg",
+                full: "https://i.ibb.co/hx9xgSNt/IMG-8151.jpg"
+            },
+            {
+                id: 1767512641960,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/b5PbgbR5/IMG-8150.jpg",
+                full: "https://i.ibb.co/b5PbgbR5/IMG-8150.jpg"
+            },
+            {
+                id: 1767512657529,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/Fqymww2D/IMG-8107.jpg",
+                full: "https://i.ibb.co/Fqymww2D/IMG-8107.jpg"
+            },
+            {
+                id: 1767512671420,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/ynJP8KSN/IMG-8009.jpg",
+                full: "https://i.ibb.co/ynJP8KSN/IMG-8009.jpg"
+            },
+            {
+                id: 1767512686094,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/3yQgj3ZZ/IMG-7956.jpg",
+                full: "https://i.ibb.co/3yQgj3ZZ/IMG-7956.jpg"
+            },
+            {
+                id: 1767512699305,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/67zvJjht/IMG-7674.jpg",
+                full: "https://i.ibb.co/67zvJjht/IMG-7674.jpg"
+            },
+            {
+                id: 1767512713465,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/TBG3prhy/IMG-2525.jpg",
+                full: "https://i.ibb.co/TBG3prhy/IMG-2525.jpg"
+            },
+            {
+                id: 1767512727095,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/4gpSn0ST/IMG-2411.jpg",
+                full: "https://i.ibb.co/4gpSn0ST/IMG-2411.jpg"
+            },
+            {
+                id: 1767512740266,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/pjc4vQcF/IMG-2155.jpg",
+                full: "https://i.ibb.co/pjc4vQcF/IMG-2155.jpg"
+            },
+            {
+                id: 1767512754719,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/9k9K3vG7/IMG-2079.jpg",
+                full: "https://i.ibb.co/9k9K3vG7/IMG-2079.jpg"
+            },
+            {
+                id: 1767512769024,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/35mtwnNv/IMG-1952.jpg",
+                full: "https://i.ibb.co/35mtwnNv/IMG-1952.jpg"
+            },
+            {
+                id: 1767512783086,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/vCnYsnRs/IMG-1890.jpg",
+                full: "https://i.ibb.co/vCnYsnRs/IMG-1890.jpg"
+            },
+            {
+                id: 1767512797008,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/BKvw6PpS/IMG-1760.jpg",
+                full: "https://i.ibb.co/BKvw6PpS/IMG-1760.jpg"
+            },
+            {
+                id: 1767512812135,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/7JNwBK5R/IMG-1638.jpg",
+                full: "https://i.ibb.co/7JNwBK5R/IMG-1638.jpg"
+            },
+            {
+                id: 1767512832136,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/Hf7bPFNK/IMG-1637.jpg",
+                full: "https://i.ibb.co/Hf7bPFNK/IMG-1637.jpg"
+            },
+            {
+                id: 1767512845171,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/rK5Mjk51/IMG-1595.jpg",
+                full: "https://i.ibb.co/rK5Mjk51/IMG-1595.jpg"
+            },
+            {
+                id: 1767512857650,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/v4xp8j0Y/IMG-1539.jpg",
+                full: "https://i.ibb.co/v4xp8j0Y/IMG-1539.jpg"
+            },
+            {
+                id: 1767512873895,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/ZR6smBWM/IMG-1520.jpg",
+                full: "https://i.ibb.co/ZR6smBWM/IMG-1520.jpg"
+            },
+            {
+                id: 1767512886606,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/xq0BsdYK/IMG-1488.jpg",
+                full: "https://i.ibb.co/xq0BsdYK/IMG-1488.jpg"
+            },
+            {
+                id: 1767512903278,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/gZMPYtZy/IMG-1474.jpg",
+                full: "https://i.ibb.co/gZMPYtZy/IMG-1474.jpg"
+            },
+            {
+                id: 1767512916330,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/5X79MHXP/IMG-1442.jpg",
+                full: "https://i.ibb.co/5X79MHXP/IMG-1442.jpg"
+            },
+            {
+                id: 1767512929974,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/7HdDx67/IMG-1431.jpg",
+                full: "https://i.ibb.co/7HdDx67/IMG-1431.jpg"
+            },
+            {
+                id: 1767512941572,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/v6Djrvst/IMG-1403.jpg",
+                full: "https://i.ibb.co/v6Djrvst/IMG-1403.jpg"
+            },
+            {
+                id: 1767512955727,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/TXtTkGM/IMG-1362.jpg",
+                full: "https://i.ibb.co/TXtTkGM/IMG-1362.jpg"
+            },
+            {
+                id: 1767512972934,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/0pvcsTD7/IMG-1266.jpg",
+                full: "https://i.ibb.co/0pvcsTD7/IMG-1266.jpg"
+            },
+            {
+                id: 1767512988506,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/ymLTdb3M/IMG-1245.jpg",
+                full: "https://i.ibb.co/ymLTdb3M/IMG-1245.jpg"
+            },
+            {
+                id: 1767513008533,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/k7QtgPP/IMG-1218.jpg",
+                full: "https://i.ibb.co/k7QtgPP/IMG-1218.jpg"
+            },
+            {
+                id: 1767513020184,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/XxdJ96np/IMG-1195.jpg",
+                full: "https://i.ibb.co/XxdJ96np/IMG-1195.jpg"
+            },
+            {
+                id: 1767513031836,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/Pscj8jJ1/IMG-1191.jpg",
+                full: "https://i.ibb.co/Pscj8jJ1/IMG-1191.jpg"
+            },
+            {
+                id: 1767513043053,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/zVqKFGnz/IMG-1167.jpg",
+                full: "https://i.ibb.co/zVqKFGnz/IMG-1167.jpg"
+            },
+            {
+                id: 1767513056614,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/p6zfhQhF/IMG-1162.jpg",
+                full: "https://i.ibb.co/p6zfhQhF/IMG-1162.jpg"
+            },
+            {
+                id: 1767513074909,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/bgHPcPGP/IMG-1146.jpg",
+                full: "https://i.ibb.co/bgHPcPGP/IMG-1146.jpg"
+            },
+            {
+                id: 1767513088681,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/vSbKXv7/IMG-1145.jpg",
+                full: "https://i.ibb.co/vSbKXv7/IMG-1145.jpg"
+            },
+            {
+                id: 1767513101313,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/wZ4Fxvns/IMG-1139.jpg",
+                full: "https://i.ibb.co/wZ4Fxvns/IMG-1139.jpg"
+            },
+            {
+                id: 1767513113105,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/j9dX2JxS/IMG-1137.jpg",
+                full: "https://i.ibb.co/j9dX2JxS/IMG-1137.jpg"
+            },
+            {
+                id: 1767513127449,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/jPhGRsQT/IMG-1115.jpg",
+                full: "https://i.ibb.co/jPhGRsQT/IMG-1115.jpg"
+            },
+            {
+                id: 1767513140760,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/fzTTbbKh/IMG-1107.jpg",
+                full: "https://i.ibb.co/fzTTbbKh/IMG-1107.jpg"
+            },
+            {
+                id: 1767513153304,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/8nqdPwRL/IMG-1102.jpg",
+                full: "https://i.ibb.co/8nqdPwRL/IMG-1102.jpg"
+            },
+            {
+                id: 1767513165521,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/sJ2HHCnr/IMG-1097.jpg",
+                full: "https://i.ibb.co/sJ2HHCnr/IMG-1097.jpg"
+            },
+            {
+                id: 1767513177626,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/TD6c6Dz6/IMG-0943.jpg",
+                full: "https://i.ibb.co/TD6c6Dz6/IMG-0943.jpg"
+            },
+            {
+                id: 1767513189369,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/XZk33k86/IMG-0917.jpg",
+                full: "https://i.ibb.co/XZk33k86/IMG-0917.jpg"
+            },
+            {
+                id: 1767513204220,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/gF7MjTvs/IMG-0888.jpg",
+                full: "https://i.ibb.co/gF7MjTvs/IMG-0888.jpg"
+            },
+            {
+                id: 1767513216910,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/XfgJ5QGw/IMG-0880.jpg",
+                full: "https://i.ibb.co/XfgJ5QGw/IMG-0880.jpg"
+            },
+            {
+                id: 1767513260809,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/8gNvk8vC/IMG-0403.jpg",
+                full: "https://i.ibb.co/8gNvk8vC/IMG-0403.jpg"
+            },
+            {
+                id: 1767513272928,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/pgMRG7R/IMG-0288.jpg",
+                full: "https://i.ibb.co/pgMRG7R/IMG-0288.jpg"
+            },
+            {
+                id: 1767513284717,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/zVtVYB1w/IMG-0210.jpg",
+                full: "https://i.ibb.co/zVtVYB1w/IMG-0210.jpg"
+            },
+            {
+                id: 1767513298324,
+                title: "FFD",
+                category: "Football",
+                desc: "FFD Tournament",
+                src: "https://i.ibb.co/673rrmq5/IMG-0278.jpg",
+                full: "https://i.ibb.co/673rrmq5/IMG-0278.jpg"
+            },
+        ];
+
+        // --- ELEMENTS ---
+        const galleryGrid = document.getElementById('gallery-grid');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxTitle = document.getElementById('lightbox-title');
+        const lightboxDesc = document.getElementById('lightbox-desc');
+        const lightboxDownload = document.getElementById('lightbox-download');
+        const closeBtn = document.getElementById('lightbox-close');
+        const prevBtn = document.getElementById('lightbox-prev');
+        const nextBtn = document.getElementById('lightbox-next');
+        const adminModal = document.getElementById('adminModal');
+
+        let currentIndex = 0;
+        let activePhotos = [...photos]; // Tracks photos currently shown (for navigation)
+
+        // --- HERO SLIDER LOGIC ---
+        function initHeroSlider() {
+            const sliderContainer = document.getElementById('hero-slider');
+            
+            // Create a copy of photos array to not disturb the gallery order
+            // Shuffle the array to randomize the order
+            const shuffledPhotos = [...photos].sort(() => 0.5 - Math.random());
+
+            // Pick first 5 photos from the shuffled list
+            const slides = shuffledPhotos.slice(0, 5); 
+            
+            slides.forEach((photo, index) => {
+                const slide = document.createElement('div');
+                slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
+                slide.style.backgroundImage = `url('${photo.src}')`;
+                sliderContainer.appendChild(slide);
+            });
+
+            let currentSlide = 0;
+            const slideElements = document.querySelectorAll('.hero-slide');
+            
+            if(slideElements.length > 1) {
+                setInterval(() => {
+                    slideElements[currentSlide].classList.remove('active');
+                    currentSlide = (currentSlide + 1) % slideElements.length;
+                    slideElements[currentSlide].classList.add('active');
+                }, 5000); // Change every 5 seconds
+            }
+        }
+
+        // --- RENDER GALLERY ---
+        function renderGallery(filter = 'all') {
+            galleryGrid.innerHTML = '';
+            
+            if (filter === 'all') {
+                // Randomize activePhotos when on "All" tab
+                activePhotos = [...photos].sort(() => 0.5 - Math.random());
+            } else {
+                activePhotos = photos.filter(p => p.category === filter);
+            }
+
+            activePhotos.forEach((photo, index) => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.onclick = () => openLightbox(index);
+                
+                item.innerHTML = `
+                    <img src="${photo.src}" alt="${photo.title}" loading="lazy">
+                    <div class="thumb-watermark">REZYCLIPS</div>
+                    <div class="overlay">
+                        <span class="item-category">${photo.category}</span>
+                        <span class="item-title">${photo.title}</span>
+                    </div>
+                `;
+                galleryGrid.appendChild(item);
+            });
+        }
+
+        // --- FILTER LOGIC ---
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active state
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Filter content
+                renderGallery(btn.dataset.filter);
+            });
+        });
+
+        // --- LIGHTBOX LOGIC ---
+        function openLightbox(index) {
+            currentIndex = index;
+            updateLightboxContent();
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function updateLightboxContent() {
+            const photo = activePhotos[currentIndex];
+            lightboxImg.src = photo.full;
+            lightboxTitle.textContent = photo.title;
+            lightboxDesc.textContent = `${photo.category} | ${photo.desc}`;
+            
+            // Check for PIN protection
+            if (photo.pin && photo.pin.trim() !== "") {
+                lightboxDownload.innerHTML = "🔒 Protected Download";
+                lightboxDownload.classList.add('locked');
+            } else {
+                lightboxDownload.innerHTML = "Download High-Res";
+                lightboxDownload.classList.remove('locked');
+            }
+        }
+
+        function showNext() {
+            currentIndex = (currentIndex + 1) % activePhotos.length;
+            updateLightboxContent();
+        }
+
+        function showPrev() {
+            currentIndex = (currentIndex - 1 + activePhotos.length) % activePhotos.length;
+            updateLightboxContent();
+        }
+
+        // --- ADMIN GENERATOR ---
+        function toggleAdmin() {
+            // Check if modal is currently open
+            if (adminModal.classList.contains('active')) {
+                adminModal.classList.remove('active');
+            } else {
+                // If closed, ask for PIN
+                const pin = prompt("Enter Admin PIN:");
+                if (pin === "4673") {
+                    adminModal.classList.add('active');
+                    // Reset to add tab by default
+                    switchAdminTab('add');
+                } else if (pin !== null) {
+                    alert("Incorrect PIN");
+                }
+            }
+        }
+
+        function switchAdminTab(tabName) {
+            // Update Tab UI
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            const activeTab = Array.from(document.querySelectorAll('.admin-tab')).find(t => t.textContent.toLowerCase().includes(tabName));
+            if(activeTab) activeTab.classList.add('active');
+
+            // Update Content UI
+            document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(`panel-${tabName}`).classList.add('active');
+
+            // Specific logic for Edit tab
+            if(tabName === 'edit') {
+                populateEditDropdown();
+            }
+        }
+
+        function generateCode() {
+            const title = document.getElementById('adminTitle').value;
+            const category = document.getElementById('adminCategory').value;
+            const desc = document.getElementById('adminDesc').value;
+            const pin = document.getElementById('adminPin').value;
+            const urlsInput = document.getElementById('adminUrl').value;
+            
+            if(!title || !urlsInput) {
+                alert("Please enter a title and at least one image URL");
+                return;
+            }
+
+            const urls = urlsInput.split('\n').filter(url => url.trim() !== '');
+            let codeSnippet = '';
+
+            urls.forEach((url, index) => {
+                const cleanUrl = url.trim();
+                const id = Date.now() + index;
+                
+                codeSnippet += `
+            {
+                id: ${id},
+                title: "${title}",
+                category: "${category}",
+                desc: "${desc}",
+                src: "${cleanUrl}",
+                full: "${cleanUrl}",
+                pin: "${pin}"
+            },`;
+            });
+
+            const output = document.getElementById('codeOutput');
+            output.innerText = codeSnippet;
+            output.style.display = 'block';
+            
+            navigator.clipboard.writeText(codeSnippet).then(() => {
+                alert(`Generated code for ${urls.length} photos! Copied to clipboard.`);
+            });
+        }
+
+        // --- EDIT EXISTING LOGIC ---
+        function populateEditDropdown() {
+            const select = document.getElementById('editPhotoSelect');
+            select.innerHTML = '<option value="">Select a Photo...</option>';
+            
+            // Sort by latest added (usually higher ID)
+            const sortedPhotos = [...photos].sort((a, b) => b.id - a.id);
+            
+            sortedPhotos.forEach(p => {
+                const option = document.createElement('option');
+                option.value = p.id;
+                option.textContent = `${p.title} (${p.category}) - ID: ${p.id}`;
+                select.appendChild(option);
+            });
+        }
+
+        function loadPhotoForEdit() {
+            const id = document.getElementById('editPhotoSelect').value;
+            const photo = photos.find(p => p.id == id);
+            
+            if(photo) {
+                document.getElementById('editTitle').value = photo.title;
+                document.getElementById('editPin').value = photo.pin || "";
+            } else {
+                document.getElementById('editTitle').value = "";
+                document.getElementById('editPin').value = "";
+            }
+        }
+
+        function generateUpdatedCode() {
+            const id = document.getElementById('editPhotoSelect').value;
+            const photo = photos.find(p => p.id == id);
+            
+            if(!photo) {
+                alert("Please select a photo first.");
+                return;
+            }
+
+            const newTitle = document.getElementById('editTitle').value;
+            const newPin = document.getElementById('editPin').value;
+
+            // Create updated object based on original photo data
+            // We use the original photo properties but override title and pin
+            const updatedPhotoBlock = `
+            {
+                id: ${photo.id},
+                title: "${newTitle}",
+                category: "${photo.category}",
+                desc: "${photo.desc}",
+                src: "${photo.src}",
+                full: "${photo.full}",
+                pin: "${newPin}"
+            },`;
+
+            const output = document.getElementById('codeOutput');
+            output.innerText = `// Replace the block for ID ${photo.id} with this:\n` + updatedPhotoBlock;
+            output.style.display = 'block';
+            
+            navigator.clipboard.writeText(updatedPhotoBlock).then(() => {
+                alert("Updated code copied! Replace the old block in index.html with this new one.");
+            });
+        }
+
+        // --- EVENT LISTENERS ---
+        closeBtn.addEventListener('click', closeLightbox);
+        nextBtn.addEventListener('click', (e) => { e.stopPropagation(); showNext(); });
+        prevBtn.addEventListener('click', (e) => { e.stopPropagation(); showPrev(); });
+        
+        // Handle Download Click with PIN check
+        lightboxDownload.addEventListener('click', (e) => {
+            const photo = activePhotos[currentIndex];
+            
+            if (photo.pin && photo.pin.trim() !== "") {
+                const userPin = prompt("This photo is protected. Enter PIN to download:");
+                if (userPin === photo.pin) {
+                    window.open(photo.full, '_blank');
+                } else if (userPin !== null) {
+                    alert("Incorrect PIN. Access denied.");
+                }
+            } else {
+                // Public download
+                window.open(photo.full, '_blank');
+            }
+        });
+
+        // Close on background click
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('active')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') showNext();
+            if (e.key === 'ArrowLeft') showPrev();
+        });
+
+        // --- INIT ---
+        renderGallery();
+        initHeroSlider(); // Start the background slider
+
+    </script>
+</body>
+</html>
