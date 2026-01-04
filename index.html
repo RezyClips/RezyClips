@@ -185,12 +185,43 @@
             box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
         }
 
-        /* --- FILTERS --- */
+        /* --- FILTERS & SEARCH --- */
+        .filters-container {
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #333;
+            border-radius: 50px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+            background: rgba(255,255,255,0.1);
+        }
+
         .filters {
             display: flex;
             justify-content: center;
             gap: 15px;
-            padding: 40px 20px;
             flex-wrap: wrap;
         }
 
@@ -198,14 +229,25 @@
             background: rgba(255,255,255,0.05);
             color: var(--text-muted);
             border: 1px solid #333;
-            padding: 10px 25px;
+            padding: 10px 20px;
             border-radius: 4px; /* Boxier */
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
             transition: all 0.3s;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-btn span {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 10px;
         }
 
         .filter-btn:hover, .filter-btn.active {
@@ -253,21 +295,16 @@
             transition: transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
         }
 
+        /* UPDATED THUMBNAIL WATERMARK */
         .thumb-watermark {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-30deg);
-            font-size: 1.2rem;
-            font-weight: 900;
-            color: rgba(255, 255, 255, 0.15); /* Very Subtle */
-            pointer-events: none;
-            white-space: nowrap;
+            inset: 0; /* Covers the whole thumbnail */
             z-index: 2;
-            text-transform: uppercase;
+            pointer-events: none;
             user-select: none;
-            width: 100%;
-            text-align: center;
+            /* Same pattern as lightbox */
+            background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='50%25' y='50%25' font-family='Arial, sans-serif' font-weight='900' font-size='18' fill='rgba(255, 255, 255, 0.18)' transform='rotate(-30 100 100)' text-anchor='middle' dominant-baseline='middle'%3EREZYCLIPS%3C/text%3E%3C/svg%3E");
+            background-repeat: repeat;
         }
 
         .overlay {
@@ -412,6 +449,36 @@
         .prev-btn { left: 30px; }
         .next-btn { right: 30px; }
 
+        /* --- BACK TO TOP BTN --- */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s;
+            z-index: 900;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            background: var(--accent-hover);
+        }
+
         /* --- FOOTER & ADMIN --- */
         footer {
             padding: 50px 20px;
@@ -482,9 +549,11 @@
             padding: 30px;
             border-radius: 8px;
             width: 90%;
-            max-width: 500px;
+            max-width: 600px;
             border: 1px solid #333;
             box-shadow: 0 0 40px rgba(168, 85, 247, 0.1);
+            max-height: 90vh;
+            overflow-y: auto;
         }
         .admin-content h2 { margin-bottom: 20px; color: var(--accent); font-style: italic; }
         
@@ -541,6 +610,35 @@
             border: 1px solid #333;
         }
 
+        /* ADMIN VISUAL GRID SELECTOR */
+        .admin-photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+            padding: 10px;
+            background: #000;
+        }
+        .admin-photo-thumb {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            opacity: 0.4;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        .admin-photo-thumb:hover { opacity: 0.8; }
+        .admin-photo-thumb.selected {
+            opacity: 1;
+            border-color: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
         /* --- ANIMATIONS & MEDIA QUERIES --- */
         @keyframes fadeIn {
             to { opacity: 1; transform: translateY(0); }
@@ -585,14 +683,22 @@
         </a>
     </section>
 
-    <!-- GALLERY FILTERS -->
-    <div id="gallery" class="filters">
-        <button class="filter-btn active" data-filter="all">All Sports</button>
-        <button class="filter-btn" data-filter="Football">Football</button>
-        <button class="filter-btn" data-filter="Basketball">Basketball</button>
-        <button class="filter-btn" data-filter="Soccer">Soccer</button>
-        <button class="filter-btn" data-filter="Track">Track</button>
-        <button class="filter-btn" data-filter="Motorsports">Motorsports</button>
+    <!-- FILTERS & SEARCH -->
+    <div id="gallery" class="filters-container">
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search photos (e.g. Finals, Touchdown)...">
+        </div>
+
+        <!-- Filters with Counts -->
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All <span id="count-all">0</span></button>
+            <button class="filter-btn" data-filter="Football">Football <span id="count-Football">0</span></button>
+            <button class="filter-btn" data-filter="Basketball">Basketball <span id="count-Basketball">0</span></button>
+            <button class="filter-btn" data-filter="Soccer">Soccer <span id="count-Soccer">0</span></button>
+            <button class="filter-btn" data-filter="Track">Track <span id="count-Track">0</span></button>
+            <button class="filter-btn" data-filter="Motorsports">Motorsports <span id="count-Motorsports">0</span></button>
+        </div>
     </div>
 
     <!-- GALLERY GRID -->
@@ -601,6 +707,9 @@
             <!-- JS will populate this -->
         </div>
     </div>
+
+    <!-- BACK TO TOP -->
+    <div class="back-to-top" id="backToTop" onclick="scrollToTop()">&#8679;</div>
 
     <!-- FOOTER / CONTACT -->
     <footer id="contact">
@@ -652,7 +761,7 @@
             <!-- ADD NEW PANEL -->
             <div id="panel-add" class="admin-panel active">
                 <p style="font-size:0.8rem; color:#888; margin-bottom:15px;">
-                    Generate code for new photos. 1. Fill details. 2. Paste list of URLs. 3. Copy code. 4. Paste into index.html.
+                    Generate code for new photos.
                 </p>
                 <div class="admin-form">
                     <input type="text" id="adminTitle" placeholder="Photo Title (e.g. Touchdown)">
@@ -668,26 +777,43 @@
                     <input type="text" id="adminDesc" placeholder="Description (e.g. Finals Match)">
                     <input type="text" id="adminPin" placeholder="Download PIN (Optional)">
                     <textarea id="adminUrl" rows="5" placeholder="Image URLs (Paste multiple links, one per line)"></textarea>
-                    <button class="cta-button" style="width:100%" onclick="generateCode()">
-                        <span class="cta-button-text">Generate Code</span>
-                    </button>
+                    
+                    <div style="display:flex; gap:10px;">
+                        <button class="cta-button" style="width:50%; background:#333;" onclick="clearAdminForm()">Clear</button>
+                        <button class="cta-button" style="width:50%" onclick="generateCode()">Generate</button>
+                    </div>
                 </div>
             </div>
 
             <!-- EDIT EXISTING PANEL -->
             <div id="panel-edit" class="admin-panel">
                 <p style="font-size:0.8rem; color:#888; margin-bottom:15px;">
-                    Select an existing photo to add a PIN or update details. It will generate a replacement code block.
+                    1. Filter by category. 2. Select images to lock. 3. Enter PIN. 4. Generate new list.
                 </p>
-                <div class="admin-form">
-                    <select id="editPhotoSelect" onchange="loadPhotoForEdit()">
-                        <option value="">Select a Photo...</option>
-                        <!-- Populated by JS -->
+                
+                <!-- FILTER CONTROLS -->
+                <div style="margin-bottom: 10px; display: flex; gap: 10px; flex-wrap:wrap;">
+                    <select id="adminEditFilter" onchange="populateEditGrid()" style="padding: 12px; background: #050505; color: white; border: 1px solid #333; border-radius: 4px; flex-grow: 1;">
+                        <option value="all">All Categories</option>
+                        <option value="Football">Football</option>
+                        <option value="Basketball">Basketball</option>
+                        <option value="Soccer">Soccer</option>
+                        <option value="Track">Track</option>
+                        <option value="Motorsports">Motorsports</option>
                     </select>
-                    <input type="text" id="editTitle" placeholder="Title">
-                    <input type="text" id="editPin" placeholder="Download PIN (Enter to lock)">
-                    <button class="cta-button" style="width:100%" onclick="generateUpdatedCode()">
-                        <span class="cta-button-text">Generate Update</span>
+                    <button onclick="selectAllVisible()" style="padding: 8px 12px; background: #222; color: white; border: 1px solid #333; border-radius: 4px; cursor: pointer; flex-grow:1;">Select All</button>
+                    <button onclick="deselectAll()" style="padding: 8px 12px; background: #222; color: white; border: 1px solid #333; border-radius: 4px; cursor: pointer; flex-grow:1;">Clear</button>
+                </div>
+
+                <!-- VISUAL GRID SELECTOR -->
+                <div id="adminPhotoGrid" class="admin-photo-grid">
+                    <!-- JS injects images here -->
+                </div>
+                
+                <div class="admin-form">
+                    <input type="text" id="editPin" placeholder="Enter Batch PIN (Leave blank to unlock)">
+                    <button class="cta-button" style="width:100%" onclick="generateBatchUpdateCode()">
+                        <span class="cta-button-text">Generate Full Updated List</span>
                     </button>
                 </div>
             </div>
@@ -1285,9 +1411,14 @@
         const prevBtn = document.getElementById('lightbox-prev');
         const nextBtn = document.getElementById('lightbox-next');
         const adminModal = document.getElementById('adminModal');
+        const backToTopBtn = document.getElementById('backToTop');
+        const searchInput = document.getElementById('searchInput');
 
         let currentIndex = 0;
         let activePhotos = [...photos]; // Tracks photos currently shown (for navigation)
+        let currentFilter = 'all'; // Current category filter
+        let currentSearch = ''; // Current search text
+        let selectedPhotoIds = new Set(); // Track selected photos for batch editing
 
         // --- HERO SLIDER LOGIC ---
         function initHeroSlider() {
@@ -1319,15 +1450,57 @@
             }
         }
 
-        // --- RENDER GALLERY ---
-        function renderGallery(filter = 'all') {
+        // --- FILTER & SEARCH LOGIC ---
+        function updateFilterCounts() {
+            // Count all
+            document.getElementById('count-all').textContent = photos.length;
+            
+            // Count individual categories
+            const categories = ['Football', 'Basketball', 'Soccer', 'Track', 'Motorsports'];
+            categories.forEach(cat => {
+                const count = photos.filter(p => p.category === cat).length;
+                const badge = document.getElementById(`count-${cat}`);
+                if(badge) badge.textContent = count;
+            });
+        }
+
+        function filterPhotos() {
+            // Start with all photos
+            let filtered = photos;
+
+            // Apply Category Filter
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(p => p.category === currentFilter);
+            } else {
+                // If 'all', randomize slightly so it looks fresh, 
+                // but only on init or full refresh to avoid jumping during search
+                // For search stability, we might want to keep order, but user requested random on 'all'.
+                // We'll sort randomly only if search is empty to avoid jarring reorders while typing
+                if(currentSearch === '') {
+                     filtered = [...filtered].sort(() => 0.5 - Math.random());
+                }
+            }
+
+            // Apply Search Filter
+            if (currentSearch !== '') {
+                const term = currentSearch.toLowerCase();
+                filtered = filtered.filter(p => 
+                    p.title.toLowerCase().includes(term) || 
+                    p.category.toLowerCase().includes(term) ||
+                    (p.desc && p.desc.toLowerCase().includes(term))
+                );
+            }
+
+            activePhotos = filtered;
+            renderGalleryGrid();
+        }
+
+        function renderGalleryGrid() {
             galleryGrid.innerHTML = '';
             
-            if (filter === 'all') {
-                // Randomize activePhotos when on "All" tab
-                activePhotos = [...photos].sort(() => 0.5 - Math.random());
-            } else {
-                activePhotos = photos.filter(p => p.category === filter);
+            if(activePhotos.length === 0) {
+                galleryGrid.innerHTML = '<p style="text-align:center; color:#888; grid-column:1/-1; padding:40px;">No photos found matching your criteria.</p>';
+                return;
             }
 
             activePhotos.forEach((photo, index) => {
@@ -1337,7 +1510,7 @@
                 
                 item.innerHTML = `
                     <img src="${photo.src}" alt="${photo.title}" loading="lazy">
-                    <div class="thumb-watermark">REZYCLIPS</div>
+                    <div class="thumb-watermark"></div>
                     <div class="overlay">
                         <span class="item-category">${photo.category}</span>
                         <span class="item-title">${photo.title}</span>
@@ -1346,18 +1519,6 @@
                 galleryGrid.appendChild(item);
             });
         }
-
-        // --- FILTER LOGIC ---
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Update active state
-                filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                // Filter content
-                renderGallery(btn.dataset.filter);
-            });
-        });
 
         // --- LIGHTBOX LOGIC ---
         function openLightbox(index) {
@@ -1428,8 +1589,15 @@
 
             // Specific logic for Edit tab
             if(tabName === 'edit') {
-                populateEditDropdown();
+                populateEditGrid();
             }
+        }
+
+        function clearAdminForm() {
+            document.getElementById('adminTitle').value = '';
+            document.getElementById('adminDesc').value = '';
+            document.getElementById('adminPin').value = '';
+            document.getElementById('adminUrl').value = '';
         }
 
         function generateCode() {
@@ -1472,70 +1640,135 @@
             });
         }
 
-        // --- EDIT EXISTING LOGIC ---
-        function populateEditDropdown() {
-            const select = document.getElementById('editPhotoSelect');
-            select.innerHTML = '<option value="">Select a Photo...</option>';
+        // --- EDIT EXISTING LOGIC (VISUAL GRID & BATCH) ---
+        function populateEditGrid() {
+            const grid = document.getElementById('adminPhotoGrid');
+            const filter = document.getElementById('adminEditFilter').value;
+            grid.innerHTML = '';
+            
+            // Filter list based on dropdown
+            let visiblePhotos = photos;
+            if (filter !== 'all') {
+                visiblePhotos = photos.filter(p => p.category === filter);
+            }
             
             // Sort by latest added (usually higher ID)
-            const sortedPhotos = [...photos].sort((a, b) => b.id - a.id);
+            const sortedPhotos = [...visiblePhotos].sort((a, b) => b.id - a.id);
             
             sortedPhotos.forEach(p => {
-                const option = document.createElement('option');
-                option.value = p.id;
-                option.textContent = `${p.title} (${p.category}) - ID: ${p.id}`;
-                select.appendChild(option);
+                const img = document.createElement('img');
+                img.src = p.src;
+                img.className = 'admin-photo-thumb';
+                if(selectedPhotoIds.has(p.id)) {
+                    img.classList.add('selected');
+                }
+                img.onclick = () => togglePhotoSelection(p.id, img);
+                grid.appendChild(img);
             });
         }
 
-        function loadPhotoForEdit() {
-            const id = document.getElementById('editPhotoSelect').value;
-            const photo = photos.find(p => p.id == id);
-            
-            if(photo) {
-                document.getElementById('editTitle').value = photo.title;
-                document.getElementById('editPin').value = photo.pin || "";
+        function togglePhotoSelection(id, imgElement) {
+            if(selectedPhotoIds.has(id)) {
+                selectedPhotoIds.delete(id);
+                imgElement.classList.remove('selected');
             } else {
-                document.getElementById('editTitle').value = "";
-                document.getElementById('editPin').value = "";
+                selectedPhotoIds.add(id);
+                imgElement.classList.add('selected');
             }
         }
 
-        function generateUpdatedCode() {
-            const id = document.getElementById('editPhotoSelect').value;
-            const photo = photos.find(p => p.id == id);
+        function selectAllVisible() {
+            const filter = document.getElementById('adminEditFilter').value;
+            let visiblePhotos = photos;
+            if (filter !== 'all') {
+                visiblePhotos = photos.filter(p => p.category === filter);
+            }
             
-            if(!photo) {
-                alert("Please select a photo first.");
+            visiblePhotos.forEach(p => selectedPhotoIds.add(p.id));
+            populateEditGrid(); // Re-render to show selection
+        }
+
+        function deselectAll() {
+            selectedPhotoIds.clear();
+            populateEditGrid();
+        }
+
+        function generateBatchUpdateCode() {
+            if(selectedPhotoIds.size === 0) {
+                alert("Please select at least one photo from the grid.");
                 return;
             }
-
-            const newTitle = document.getElementById('editTitle').value;
+            
             const newPin = document.getElementById('editPin').value;
 
-            // Create updated object based on original photo data
-            // We use the original photo properties but override title and pin
-            const updatedPhotoBlock = `
-            {
-                id: ${photo.id},
-                title: "${newTitle}",
-                category: "${photo.category}",
-                desc: "${photo.desc}",
-                src: "${photo.src}",
-                full: "${photo.full}",
-                pin: "${newPin}"
-            },`;
+            // Generate the COMPLETE updated list
+            // We map over the original array to preserve order and update specific IDs
+            const updatedPhotosList = photos.map(p => {
+                if(selectedPhotoIds.has(p.id)) {
+                    // Update this photo
+                    return { ...p, pin: newPin };
+                }
+                return p;
+            });
+
+            // Convert to string format for code block
+            const jsonString = JSON.stringify(updatedPhotosList, null, 4);
+            // Fix keys to not have quotes to match typical JS style (optional but nice)
+            // Actually JSON is fine, but let's make it look like the source
+            let formattedList = "const photos = [\n";
+            updatedPhotosList.forEach(p => {
+                formattedList += `    {
+        id: ${p.id},
+        title: "${p.title}",
+        category: "${p.category}",
+        desc: "${p.desc}",
+        src: "${p.src}",
+        full: "${p.full}",
+        pin: "${p.pin || ''}"
+    },\n`;
+            });
+            formattedList += "];";
 
             const output = document.getElementById('codeOutput');
-            output.innerText = `// Replace the block for ID ${photo.id} with this:\n` + updatedPhotoBlock;
+            output.innerText = formattedList;
             output.style.display = 'block';
             
-            navigator.clipboard.writeText(updatedPhotoBlock).then(() => {
-                alert("Updated code copied! Replace the old block in index.html with this new one.");
+            navigator.clipboard.writeText(formattedList).then(() => {
+                alert(`Generated updated list! Replace the entire 'const photos = [...]' block in your file.`);
             });
+        }
+
+        // --- BACK TO TOP & SCROLL ---
+        window.onscroll = function() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+        };
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // --- EVENT LISTENERS ---
+        
+        // Filter Buttons
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                filterPhotos();
+            });
+        });
+
+        // Search Input
+        searchInput.addEventListener('input', (e) => {
+            currentSearch = e.target.value.trim();
+            filterPhotos();
+        });
+
         closeBtn.addEventListener('click', closeLightbox);
         nextBtn.addEventListener('click', (e) => { e.stopPropagation(); showNext(); });
         prevBtn.addEventListener('click', (e) => { e.stopPropagation(); showPrev(); });
@@ -1571,7 +1804,8 @@
         });
 
         // --- INIT ---
-        renderGallery();
+        updateFilterCounts();
+        filterPhotos(); // Initial render
         initHeroSlider(); // Start the background slider
 
     </script>
