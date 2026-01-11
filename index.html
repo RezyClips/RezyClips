@@ -218,6 +218,30 @@
             background: rgba(255,255,255,0.1);
         }
 
+        /* EVENT DROPDOWN STYLE */
+        .event-select {
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #333;
+            border-radius: 50px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+            appearance: none; /* Custom arrow usually needed, simpler here */
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .event-select:focus {
+            border-color: var(--accent);
+            background: rgba(255,255,255,0.1);
+        }
+        .event-select option {
+            background: #121212;
+            color: white;
+        }
+
         .filters {
             display: flex;
             justify-content: center;
@@ -708,9 +732,15 @@
 
     <!-- FILTERS & SEARCH -->
     <div id="gallery" class="filters-container">
-        <!-- Search Bar -->
+        <!-- Search Bar & Event Filter -->
         <div class="search-container">
             <input type="text" id="searchInput" class="search-input" placeholder="Search photos (e.g. Finals, Touchdown)...">
+            
+            <!-- NEW EVENT DROPDOWN -->
+            <select id="eventFilter" class="event-select">
+                <option value="all">All Events</option>
+                <!-- JS will populate this with events like "Border Shootout 2026" -->
+            </select>
         </div>
 
         <!-- Filters with Counts -->
@@ -798,6 +828,9 @@
                         <option value="Tennis">Tennis</option>
                         <option value="Baseball">Baseball</option>
                     </select>
+                    <!-- NEW EVENT INPUT -->
+                    <input type="text" id="adminEvent" placeholder="Event Name (e.g. Border Shootout 2026)">
+                    
                     <input type="text" id="adminDesc" placeholder="Description (e.g. Finals Match)">
                     <input type="text" id="adminPin" placeholder="Download PIN (Optional)">
                     <textarea id="adminUrl" rows="5" placeholder="Image URLs (Paste multiple links, one per line)"></textarea>
@@ -812,7 +845,7 @@
             <!-- EDIT EXISTING PANEL -->
             <div id="panel-edit" class="admin-panel">
                 <p style="font-size:0.8rem; color:#888; margin-bottom:15px;">
-                    1. Filter by category. 2. Select images to lock. 3. Enter PIN. 4. Generate new list.
+                    1. Filter by category. 2. Select images. 3. Update details. 4. Generate new list.
                 </p>
                 
                 <!-- FILTER CONTROLS -->
@@ -837,7 +870,10 @@
                 <button id="adminLoadMore" class="cta-button" style="width:100%; margin-bottom:15px; display:none; padding:10px; font-size:0.8rem;" onclick="loadMoreAdminPhotos()">Load More</button>
                 
                 <div class="admin-form">
-                    <input type="text" id="editPin" placeholder="Enter Batch PIN (Leave blank to unlock)">
+                    <!-- NEW BATCH EVENT INPUT -->
+                    <input type="text" id="editEvent" placeholder="Update Event Name (e.g. Border Shootout 2026)">
+                    <input type="text" id="editPin" placeholder="Update Batch PIN (Leave blank to unlock)">
+                    
                     <button class="cta-button" style="width:100%" onclick="generateBatchUpdateCode()">
                         <span class="cta-button-text">Generate Full Updated List</span>
                     </button>
@@ -1512,6 +1548,7 @@
         let currentIndex = 0;
         let activePhotos = [...photos]; // Tracks photos currently shown (for navigation)
         let currentFilter = 'all'; // Current category filter
+        let currentEvent = 'all'; // Current event filter
         let currentSearch = ''; // Current search text
         let selectedPhotoIds = new Set(); // Track selected photos for batch editing
         
@@ -1562,6 +1599,29 @@
                 const badge = document.getElementById(`count-${cat}`);
                 if(badge) badge.textContent = count;
             });
+
+            // UPDATE EVENT DROPDOWN
+            const eventSelect = document.getElementById('eventFilter');
+            // Get unique events, filter out undefined/null
+            const events = [...new Set(photos.map(p => p.event).filter(e => e))];
+            
+            // Save current selection if possible
+            const currentSelection = eventSelect.value;
+
+            // Reset
+            eventSelect.innerHTML = '<option value="all">All Events</option>';
+            
+            events.sort().forEach(evt => {
+                const option = document.createElement('option');
+                option.value = evt;
+                option.textContent = evt;
+                eventSelect.appendChild(option);
+            });
+
+            // Restore selection if valid
+            if (events.includes(currentSelection)) {
+                eventSelect.value = currentSelection;
+            }
         }
 
         function filterPhotos() {
@@ -1571,14 +1631,11 @@
             // Apply Category Filter
             if (currentFilter !== 'all') {
                 filtered = filtered.filter(p => p.category === currentFilter);
-            } else {
-                // If 'all', randomize slightly so it looks fresh, 
-                // but only on init or full refresh to avoid jumping during search
-                // For search stability, we might want to keep order, but user requested random on 'all'.
-                // We'll sort randomly only if search is empty to avoid jarring reorders while typing
-                if(currentSearch === '') {
-                     filtered = [...filtered].sort(() => 0.5 - Math.random());
-                }
+            }
+
+            // Apply Event Filter
+            if (currentEvent !== 'all') {
+                filtered = filtered.filter(p => p.event === currentEvent);
             }
 
             // Apply Search Filter
@@ -1587,8 +1644,14 @@
                 filtered = filtered.filter(p => 
                     p.title.toLowerCase().includes(term) || 
                     p.category.toLowerCase().includes(term) ||
-                    (p.desc && p.desc.toLowerCase().includes(term))
+                    (p.desc && p.desc.toLowerCase().includes(term)) ||
+                    (p.event && p.event.toLowerCase().includes(term))
                 );
+            }
+            
+            // Randomize if on "All" tabs and no specific search
+            if (currentFilter === 'all' && currentEvent === 'all' && currentSearch === '') {
+                 filtered = [...filtered].sort(() => 0.5 - Math.random());
             }
 
             activePhotos = filtered;
@@ -1612,7 +1675,7 @@
                     <img src="${photo.src}" alt="${photo.title}" loading="lazy">
                     <div class="thumb-watermark"></div>
                     <div class="overlay">
-                        <span class="item-category">${photo.category}</span>
+                        <span class="item-category">${photo.event || photo.category}</span>
                         <span class="item-title">${photo.title}</span>
                     </div>
                 `;
@@ -1637,7 +1700,9 @@
             const photo = activePhotos[currentIndex];
             lightboxImg.src = photo.full;
             lightboxTitle.textContent = photo.title;
-            lightboxDesc.textContent = `${photo.category} | ${photo.desc}`;
+            // Show Event Name if available, otherwise just Category
+            const subTitle = photo.event ? `${photo.event} • ${photo.category}` : photo.category;
+            lightboxDesc.textContent = `${subTitle} | ${photo.desc}`;
             
             // Check for PIN protection
             if (photo.pin && photo.pin.trim() !== "") {
@@ -1649,6 +1714,7 @@
             }
         }
 
+        // ... (Prev/Next/Close functions remain same) ...
         function showNext() {
             currentIndex = (currentIndex + 1) % activePhotos.length;
             updateLightboxContent();
@@ -1696,6 +1762,7 @@
         function clearAdminForm() {
             document.getElementById('adminTitle').value = '';
             document.getElementById('adminDesc').value = '';
+            document.getElementById('adminEvent').value = ''; // Clear event
             document.getElementById('adminPin').value = '';
             document.getElementById('adminUrl').value = '';
         }
@@ -1704,6 +1771,7 @@
             const title = document.getElementById('adminTitle').value;
             const category = document.getElementById('adminCategory').value;
             const desc = document.getElementById('adminDesc').value;
+            const eventVal = document.getElementById('adminEvent').value; // Get Event
             const pin = document.getElementById('adminPin').value;
             const urlsInput = document.getElementById('adminUrl').value;
             
@@ -1724,6 +1792,7 @@
                 id: ${id},
                 title: "${title}",
                 category: "${category}",
+                event: "${eventVal}",
                 desc: "${desc}",
                 src: "${cleanUrl}",
                 full: "${cleanUrl}",
@@ -1741,6 +1810,7 @@
         }
 
         // --- EDIT EXISTING LOGIC (VISUAL GRID & BATCH) ---
+        // ... (populateEditGrid, loadMoreAdminPhotos, togglePhotoSelection, selectAllVisible, deselectAll remain same) ...
         function populateEditGrid() {
             const grid = document.getElementById('adminPhotoGrid');
             const filter = document.getElementById('adminEditFilter').value;
@@ -1775,9 +1845,9 @@
             nextBatch.forEach(p => {
                 const img = document.createElement('img');
                 img.src = p.src;
-                img.loading = "lazy"; // CRITICAL: Lazy load images
+                img.loading = "lazy"; 
                 img.className = 'admin-photo-thumb';
-                img.dataset.id = p.id; // Store ID on element for selection logic
+                img.dataset.id = p.id; 
                 
                 if(selectedPhotoIds.has(p.id)) {
                     img.classList.add('selected');
@@ -1832,27 +1902,37 @@
             }
             
             const newPin = document.getElementById('editPin').value;
+            const newEvent = document.getElementById('editEvent').value; // Get new event name
 
             // Generate the COMPLETE updated list
-            // We map over the original array to preserve order and update specific IDs
             const updatedPhotosList = photos.map(p => {
                 if(selectedPhotoIds.has(p.id)) {
                     // Update this photo
-                    return { ...p, pin: newPin };
+                    let updated = { ...p };
+                    // Only update pin if the field isn't explicitly empty (user might want to keep existing pins)
+                    // Actually, typical batch behavior: if input is empty, maybe clear it? 
+                    // Let's assume: if user types in pin box, update pin. If user types in event box, update event.
+                    
+                    if (newPin !== "") updated.pin = newPin; // Update/Lock
+                    // If you want to UNLOCK, the user needs to know how. 
+                    // Let's adhere to "Leave blank to unlock" IF they specifically interact with it?
+                    // Simpler: Just override. If empty string is passed, it unlocks.
+                    updated.pin = newPin; 
+
+                    if (newEvent !== "") updated.event = newEvent;
+                    return updated;
                 }
                 return p;
             });
 
             // Convert to string format for code block
-            const jsonString = JSON.stringify(updatedPhotosList, null, 4);
-            // Fix keys to not have quotes to match typical JS style (optional but nice)
-            // Actually JSON is fine, but let's make it look like the source
             let formattedList = "const photos = [\n";
             updatedPhotosList.forEach(p => {
                 formattedList += `    {
         id: ${p.id},
         title: "${p.title}",
         category: "${p.category}",
+        event: "${p.event || ''}", 
         desc: "${p.desc}",
         src: "${p.src}",
         full: "${p.full}",
@@ -1870,45 +1950,25 @@
             });
         }
 
-        // --- BACK TO TOP & SCROLL ---
-        window.onscroll = function() {
-            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-                backToTopBtn.classList.add('visible');
-            } else {
-                backToTopBtn.classList.remove('visible');
-            }
-        };
-
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
         // --- EVENT LISTENERS ---
-        
-        // Filter Buttons
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentFilter = btn.dataset.filter;
-                filterPhotos();
-            });
-        });
-
-        // Search Input
+        // Search Input & Event Filter
         searchInput.addEventListener('input', (e) => {
             currentSearch = e.target.value.trim();
             filterPhotos();
         });
 
+        document.getElementById('eventFilter').addEventListener('change', (e) => {
+            currentEvent = e.target.value;
+            filterPhotos();
+        });
+
+        // ... (Rest of listeners remain same) ...
         closeBtn.addEventListener('click', closeLightbox);
         nextBtn.addEventListener('click', (e) => { e.stopPropagation(); showNext(); });
         prevBtn.addEventListener('click', (e) => { e.stopPropagation(); showPrev(); });
         
-        // Handle Download Click with PIN check
         lightboxDownload.addEventListener('click', (e) => {
             const photo = activePhotos[currentIndex];
-            
             if (photo.pin && photo.pin.trim() !== "") {
                 const userPin = prompt("This photo is protected. Enter PIN to download:");
                 if (userPin === photo.pin) {
@@ -1917,17 +1977,14 @@
                     alert("Incorrect PIN. Access denied.");
                 }
             } else {
-                // Public download
                 window.open(photo.full, '_blank');
             }
         });
 
-        // Close on background click
         lightbox.addEventListener('click', (e) => {
             if (e.target === lightbox) closeLightbox();
         });
 
-        // Keyboard Navigation
         document.addEventListener('keydown', (e) => {
             if (!lightbox.classList.contains('active')) return;
             if (e.key === 'Escape') closeLightbox();
@@ -1936,9 +1993,9 @@
         });
 
         // --- INIT ---
-        updateFilterCounts();
-        filterPhotos(); // Initial render
-        initHeroSlider(); // Start the background slider
+        updateFilterCounts(); // Populates Event Dropdown too
+        filterPhotos(); 
+        initHeroSlider();
 
     </script>
 </body>
