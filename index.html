@@ -71,7 +71,7 @@
             color: var(--text-muted);
             transition: color 0.3s, text-shadow 0.3s;
         }
-        .nav-links a:hover { 
+        .nav-links a:hover, .nav-links a.active { 
             color: var(--text-main); 
             text-shadow: 0 0 10px rgba(168, 85, 247, 0.5); /* Purple glow */
         }
@@ -185,13 +185,37 @@
             box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
         }
 
-        /* --- FILTERS & SEARCH --- */
+        /* --- SECTION TABS & FILTERS --- */
         .filters-container {
             padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 20px;
+        }
+
+        /* MAIN SECTION TABS (PORTFOLIO vs STORE) */
+        .section-tabs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+        .section-tab {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #555;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-style: italic;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            padding-bottom: 5px;
+        }
+        .section-tab:hover { color: #888; }
+        .section-tab.active {
+            color: white;
+            border-bottom-color: var(--accent);
+            text-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
         }
 
         .search-container {
@@ -319,6 +343,35 @@
             transition: transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
         }
 
+        /* VIDEO PLAY ICON OVERLAY */
+        .play-icon-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(0,0,0,0.6);
+            border: 2px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            pointer-events: none;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        .play-icon-overlay::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-left: 20px solid white;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            margin-left: 5px;
+        }
+
         /* UPDATED THUMBNAIL WATERMARK */
         .thumb-watermark {
             position: absolute;
@@ -386,61 +439,171 @@
         }
 
         .lightbox-content {
-            max-width: 90%;
-            max-height: 80vh;
+            width: 100%;
+            max-width: 1200px;
+            max-height: 95vh;
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* Mobile first: stacked */
             align-items: center;
             position: relative;
+            background: #111;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #333;
         }
 
-        .lightbox-img {
-            max-height: 70vh;
-            max-width: 100%;
-            border-radius: 4px;
-            box-shadow: 0 0 50px rgba(168, 85, 247, 0.2); /* Purple Glow */
-            user-select: none; /* Prevent selection */
+        @media(min-width: 1024px) {
+            .lightbox-content {
+                flex-direction: row; /* Desktop: Row */
+                height: 80vh;
+            }
         }
+
+        .media-container {
+            flex: 2;
+            width: 100%;
+            height: 50vh; /* Mobile height */
+            background: #000;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        @media(min-width: 1024px) {
+            .media-container {
+                height: 100%;
+            }
+        }
+
+        .lightbox-img, .lightbox-video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            user-select: none;
+        }
+        .lightbox-video { display: none; }
 
         /* WATERMARK STYLE - REPEATING PATTERN */
         .watermark-overlay {
             position: absolute;
-            inset: 0; /* Covers the entire lightbox image area */
+            inset: 0;
             z-index: 10;
             pointer-events: none;
             user-select: none;
-            /* SVG Data URI Pattern */
             background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Ctext x='50%25' y='50%25' font-family='Arial, sans-serif' font-weight='900' font-size='18' fill='rgba(255, 255, 255, 0.18)' transform='rotate(-30 100 100)' text-anchor='middle' dominant-baseline='middle'%3EREZYCLIPS%3C/text%3E%3C/svg%3E");
             background-repeat: repeat;
         }
 
-        .lightbox-details {
-            margin-top: 20px;
-            text-align: center;
-            color: white;
+        /* SIDEBAR (DETAILS + COMMENTS) */
+        .lightbox-sidebar {
+            flex: 1;
+            width: 100%;
+            padding: 20px;
+            overflow-y: auto;
+            background: #121212;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            border-left: 1px solid #333;
         }
 
-        .lightbox h3 { font-size: 1.8rem; margin-bottom: 5px; font-style: italic; font-weight: 800; }
+        .lightbox-details {
+            text-align: left;
+            border-bottom: 1px solid #333;
+            padding-bottom: 20px;
+        }
+
+        .lightbox h3 { font-size: 1.8rem; margin-bottom: 5px; font-style: italic; font-weight: 800; color: white; }
         .lightbox p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px; letter-spacing: 1px; text-transform: uppercase;}
 
+        .action-bar {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
         .download-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 30px;
+            flex: 1;
+            padding: 10px;
             background: var(--accent);
             color: white;
             border-radius: 4px;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
-            transition: background 0.3s, transform 0.2s;
             border: none;
             cursor: pointer;
+            text-align: center;
         }
-        .download-btn:hover { background: var(--accent-hover); transform: translateY(-2px); }
         .download-btn.locked { background: #333; color: #888; }
-        .download-btn.locked:hover { background: #444; }
+
+        .like-btn {
+            background: #222;
+            border: 1px solid #333;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        .like-btn.liked { color: #ef4444; border-color: #ef4444; background: rgba(239, 68, 68, 0.1); }
+        .like-btn:hover { background: #333; }
+
+        /* COMMENTS SECTION */
+        .comments-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+        .comments-section h4 { color: white; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .comments-list {
+            flex: 1;
+            background: #0a0a0a;
+            border-radius: 4px;
+            padding: 10px;
+            min-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #333;
+        }
+        .comment-item {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 5px;
+        }
+        .comment-item:last-child { border-bottom: none; }
+        .comment-text { color: #ccc; font-size: 0.9rem; }
+        .comment-date { color: #666; font-size: 0.7rem; display: block; margin-top: 3px; }
+
+        .comment-input-area {
+            display: flex;
+            gap: 5px;
+        }
+        .comment-input {
+            flex: 1;
+            background: #222;
+            border: 1px solid #333;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            outline: none;
+        }
+        .post-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 700;
+        }
 
         .close-btn {
             position: absolute;
@@ -451,6 +614,7 @@
             background: transparent;
             cursor: pointer;
             transition: color 0.3s;
+            z-index: 20;
         }
         .close-btn:hover { color: var(--accent); }
 
@@ -458,7 +622,7 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.5);
             color: white;
             width: 50px;
             height: 50px;
@@ -467,11 +631,13 @@
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            transition: background 0.3s, color 0.3s;
+            transition: background 0.3s;
+            z-index: 15;
+            border: 1px solid rgba(255,255,255,0.2);
         }
-        .nav-btn:hover { background: var(--accent); color: white; }
-        .prev-btn { left: 30px; }
-        .next-btn { right: 30px; }
+        .nav-btn:hover { background: var(--accent); }
+        .prev-btn { left: 10px; }
+        .next-btn { right: 10px; }
 
         /* --- BACK TO TOP BTN --- */
         .back-to-top {
@@ -710,7 +876,8 @@
         <nav>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
-                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#portfolio" onclick="switchMainSection('portfolio')">Portfolio</a></li>
+                <li><a href="#store" onclick="switchMainSection('store')">Store 🔒</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
@@ -732,6 +899,12 @@
 
     <!-- FILTERS & SEARCH -->
     <div id="gallery" class="filters-container">
+        <!-- MAIN SECTION TABS -->
+        <div class="section-tabs">
+            <div id="tab-portfolio" class="section-tab active" onclick="switchMainSection('portfolio')">Portfolio (Free)</div>
+            <div id="tab-store" class="section-tab" onclick="switchMainSection('store')">Store (Private 🔒)</div>
+        </div>
+
         <!-- Search Bar & Event Filter -->
         <div class="search-container">
             <input type="text" id="searchInput" class="search-input" placeholder="Search photos (e.g. Finals, Touchdown)...">
@@ -787,17 +960,43 @@
         <button class="nav-btn next-btn" id="lightbox-next">&#10095;</button>
         
         <div class="lightbox-content">
-            <!-- Watermark Overlay (Pattern controlled by CSS) -->
-            <div class="watermark-overlay"></div>
-            
-            <img src="" alt="" class="lightbox-img" id="lightbox-img" oncontextmenu="return false;">
-            <div class="lightbox-details">
-                <h3 id="lightbox-title">Title</h3>
-                <p id="lightbox-desc">Category | Location</p>
-                <!-- Changed to button for custom logic -->
-                <button class="download-btn" id="lightbox-download">
-                    Download High-Res
-                </button>
+            <!-- Left Side: Media -->
+            <div class="media-container">
+                <!-- Watermark Overlay (Pattern controlled by CSS) -->
+                <div class="watermark-overlay"></div>
+                <img src="" alt="" class="lightbox-img" id="lightbox-img" oncontextmenu="return false;">
+                <video class="lightbox-video" id="lightbox-video" controls autoplay playsinline></video>
+            </div>
+
+            <!-- Right Side: Sidebar -->
+            <div class="lightbox-sidebar">
+                <div class="lightbox-details">
+                    <h3 id="lightbox-title">Title</h3>
+                    <p id="lightbox-desc">Category | Location</p>
+                    <div class="action-bar">
+                        <button class="like-btn" id="likeBtn">
+                            <span>❤️</span> <span id="likeCount">0</span>
+                        </button>
+                        <button class="download-btn" id="lightbox-download">
+                            Download High-Res
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="comments-section">
+                    <h4>Comments</h4>
+                    <div id="commentsList" class="comments-list">
+                        <!-- Comments inserted here -->
+                    </div>
+                    <div class="comment-input-area">
+                        <input type="text" id="commentInput" class="comment-input" placeholder="Write a comment...">
+                        <button id="postCommentBtn" class="post-btn">Post</button>
+                    </div>
+                    <p style="font-size:0.7rem; color:#555; text-align:center;">
+                        (Note: Comments are saved locally to your device)
+                    </p>
+                </div>
             </div>
         </div>
     </div>
@@ -815,10 +1014,22 @@
             <!-- ADD NEW PANEL -->
             <div id="panel-add" class="admin-panel active">
                 <p style="font-size:0.8rem; color:#888; margin-bottom:15px;">
-                    Generate code for new photos.
+                    Generate code for new photos or videos.
                 </p>
                 <div class="admin-form">
-                    <input type="text" id="adminTitle" placeholder="Photo Title (e.g. Touchdown)">
+                    <!-- SECTION SELECTOR -->
+                    <select id="adminSection" onchange="toggleAdminPinField()">
+                        <option value="portfolio">Section: Portfolio (Free)</option>
+                        <option value="store">Section: Store (Paid/Locked)</option>
+                    </select>
+
+                    <!-- MEDIA TYPE SELECTOR -->
+                    <select id="adminMediaType" onchange="toggleAdminMediaInputs()">
+                        <option value="image">Type: Image</option>
+                        <option value="video">Type: Video</option>
+                    </select>
+
+                    <input type="text" id="adminTitle" placeholder="Photo/Video Title (e.g. Touchdown)">
                     <select id="adminCategory">
                         <option value="Football">Football</option>
                         <option value="Basketball">Basketball</option>
@@ -832,8 +1043,16 @@
                     <input type="text" id="adminEvent" placeholder="Event Name (e.g. Border Shootout 2026)">
                     
                     <input type="text" id="adminDesc" placeholder="Description (e.g. Finals Match)">
-                    <input type="text" id="adminPin" placeholder="Download PIN (Optional)">
-                    <textarea id="adminUrl" rows="5" placeholder="Image URLs (Paste multiple links, one per line)"></textarea>
+                    <input type="text" id="adminPin" placeholder="Download PIN (Required for Store)" style="display:none;">
+                    
+                    <!-- DYNAMIC MEDIA INPUTS -->
+                    <div id="imageInputs">
+                        <textarea id="adminUrl" rows="5" placeholder="Image URLs (Paste multiple links, one per line)"></textarea>
+                    </div>
+                    <div id="videoInputs" style="display:none;">
+                        <input type="text" id="adminThumbUrl" placeholder="Thumbnail Image URL (Required for grid)">
+                        <input type="text" id="adminVideoUrl" placeholder="Video File URL (.mp4, .webm)">
+                    </div>
                     
                     <div style="display:flex; gap:10px;">
                         <button class="cta-button" style="width:50%; background:#333;" onclick="clearAdminForm()">Clear</button>
@@ -845,7 +1064,7 @@
             <!-- EDIT EXISTING PANEL -->
             <div id="panel-edit" class="admin-panel">
                 <p style="font-size:0.8rem; color:#888; margin-bottom:15px;">
-                    1. Filter by category. 2. Select images. 3. Update details. 4. Generate new list.
+                    1. Filter by category. 2. Select images to lock. 3. Enter PIN. 4. Generate new list.
                 </p>
                 
                 <!-- FILTER CONTROLS -->
@@ -857,6 +1076,12 @@
                         <option value="Soccer">Soccer</option>
                         <option value="Track">Track</option>
                         <option value="Motorsports">Motorsports</option>
+                    </select>
+                    <!-- NEW SECTION FILTER -->
+                    <select id="adminEditSectionFilter" onchange="populateEditGrid()" style="padding: 12px; background: #050505; color: white; border: 1px solid #333; border-radius: 4px; flex-grow: 1;">
+                        <option value="all">All Sections</option>
+                        <option value="portfolio">Portfolio</option>
+                        <option value="store">Store</option>
                     </select>
                     <button onclick="selectAllVisible()" style="padding: 8px 12px; background: #222; color: white; border: 1px solid #333; border-radius: 4px; cursor: pointer; flex-grow:1;">Select All</button>
                     <button onclick="deselectAll()" style="padding: 8px 12px; background: #222; color: white; border: 1px solid #333; border-radius: 4px; cursor: pointer; flex-grow:1;">Clear</button>
@@ -871,6 +1096,11 @@
                 
                 <div class="admin-form">
                     <!-- NEW BATCH EVENT INPUT -->
+                    <select id="editSection">
+                        <option value="">Keep Current Section</option>
+                        <option value="portfolio">Move to Portfolio (Free)</option>
+                        <option value="store">Move to Store (Locked)</option>
+                    </select>
                     <input type="text" id="editEvent" placeholder="Update Event Name (e.g. Border Shootout 2026)">
                     <input type="text" id="editPin" placeholder="Update Batch PIN (Leave blank to unlock)">
                     
@@ -902,631 +1132,701 @@
                 id: 1767511015840,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/XxcK4n6j/IMG-9732.jpg",
                 full: "https://i.ibb.co/XxcK4n6j/IMG-9732.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767511730054,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/k60znqXg/IMG-9863.jpg",
                 full: "https://i.ibb.co/k60znqXg/IMG-9863.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767511840037,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/rRJmp8PS/IMG-9717.jpg",
                 full: "https://i.ibb.co/rRJmp8PS/IMG-9717.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767511936845,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/W48HQ0bP/IMG-9700.jpg",
                 full: "https://i.ibb.co/W48HQ0bP/IMG-9700.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767511966241,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/yF9Pffzf/IMG-9245.jpg",
                 full: "https://i.ibb.co/yF9Pffzf/IMG-9245.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767511986550,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/FLhLb5gB/IMG-9000.jpg",
                 full: "https://i.ibb.co/FLhLb5gB/IMG-9000.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512085045,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/fY33PtrP/IMG-8977.jpg",
                 full: "https://i.ibb.co/fY33PtrP/IMG-8977.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512106839,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/spMwdc5g/IMG-8947.jpg",
                 full: "https://i.ibb.co/spMwdc5g/IMG-8947.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512137896,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/nMgC4Dq6/IMG-8936.jpg",
                 full: "https://i.ibb.co/nMgC4Dq6/IMG-8936.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512156213,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/DHZq6Tvb/IMG-8831.jpg",
                 full: "https://i.ibb.co/DHZq6Tvb/IMG-8831.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512176151,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/h5GZnFD/IMG-8531.jpg",
                 full: "https://i.ibb.co/h5GZnFD/IMG-8531.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512195072,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/9mz19vxn/IMG-8477.jpg",
                 full: "https://i.ibb.co/9mz19vxn/IMG-8477.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512294711,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/p6pxTVfj/IMG-8473.jpg",
                 full: "https://i.ibb.co/p6pxTVfj/IMG-8473.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512319054,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/BKTYHg1v/IMG-8466.jpg",
                 full: "https://i.ibb.co/BKTYHg1v/IMG-8466.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512350058,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/1J8v8VDH/IMG-8461.jpg",
                 full: "https://i.ibb.co/1J8v8VDH/IMG-8461.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512369529,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/ymf0rMLs/IMG-8445.jpg",
                 full: "https://i.ibb.co/ymf0rMLs/IMG-8445.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512385849,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/PvY342t1/IMG-8424.jpg",
                 full: "https://i.ibb.co/PvY342t1/IMG-8424.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512401624,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/JFcSh4tY/IMG-8397.jpg",
                 full: "https://i.ibb.co/JFcSh4tY/IMG-8397.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512538275,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/hxgJnYdr/IMG-8372.jpg",
                 full: "https://i.ibb.co/hxgJnYdr/IMG-8372.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512555603,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/7JQZMg1M/IMG-8311.jpg",
                 full: "https://i.ibb.co/7JQZMg1M/IMG-8311.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512574548,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/tM8qMTHx/IMG-8279.jpg",
                 full: "https://i.ibb.co/tM8qMTHx/IMG-8279.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512594819,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/YTRtcZX3/IMG-8261.jpg",
                 full: "https://i.ibb.co/YTRtcZX3/IMG-8261.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512610082,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/p6rp9pLk/IMG-8235.jpg",
                 full: "https://i.ibb.co/p6rp9pLk/IMG-8235.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512625522,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/hx9xgSNt/IMG-8151.jpg",
                 full: "https://i.ibb.co/hx9xgSNt/IMG-8151.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512641960,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/b5PbgbR5/IMG-8150.jpg",
                 full: "https://i.ibb.co/b5PbgbR5/IMG-8150.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512657529,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/Fqymww2D/IMG-8107.jpg",
                 full: "https://i.ibb.co/Fqymww2D/IMG-8107.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512671420,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/ynJP8KSN/IMG-8009.jpg",
                 full: "https://i.ibb.co/ynJP8KSN/IMG-8009.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512686094,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/3yQgj3ZZ/IMG-7956.jpg",
                 full: "https://i.ibb.co/3yQgj3ZZ/IMG-7956.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512699305,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/67zvJjht/IMG-7674.jpg",
                 full: "https://i.ibb.co/67zvJjht/IMG-7674.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512713465,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/TBG3prhy/IMG-2525.jpg",
                 full: "https://i.ibb.co/TBG3prhy/IMG-2525.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512727095,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/4gpSn0ST/IMG-2411.jpg",
                 full: "https://i.ibb.co/4gpSn0ST/IMG-2411.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512740266,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/pjc4vQcF/IMG-2155.jpg",
                 full: "https://i.ibb.co/pjc4vQcF/IMG-2155.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512754719,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/9k9K3vG7/IMG-2079.jpg",
                 full: "https://i.ibb.co/9k9K3vG7/IMG-2079.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512769024,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/35mtwnNv/IMG-1952.jpg",
                 full: "https://i.ibb.co/35mtwnNv/IMG-1952.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512783086,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/vCnYsnRs/IMG-1890.jpg",
                 full: "https://i.ibb.co/vCnYsnRs/IMG-1890.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512797008,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/BKvw6PpS/IMG-1760.jpg",
                 full: "https://i.ibb.co/BKvw6PpS/IMG-1760.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512812135,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/7JNwBK5R/IMG-1638.jpg",
                 full: "https://i.ibb.co/7JNwBK5R/IMG-1638.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512832136,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/Hf7bPFNK/IMG-1637.jpg",
                 full: "https://i.ibb.co/Hf7bPFNK/IMG-1637.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512845171,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/rK5Mjk51/IMG-1595.jpg",
                 full: "https://i.ibb.co/rK5Mjk51/IMG-1595.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512857650,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/v4xp8j0Y/IMG-1539.jpg",
                 full: "https://i.ibb.co/v4xp8j0Y/IMG-1539.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512873895,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/ZR6smBWM/IMG-1520.jpg",
                 full: "https://i.ibb.co/ZR6smBWM/IMG-1520.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512886606,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/xq0BsdYK/IMG-1488.jpg",
                 full: "https://i.ibb.co/xq0BsdYK/IMG-1488.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512903278,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/gZMPYtZy/IMG-1474.jpg",
                 full: "https://i.ibb.co/gZMPYtZy/IMG-1474.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512916330,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/5X79MHXP/IMG-1442.jpg",
                 full: "https://i.ibb.co/5X79MHXP/IMG-1442.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512929974,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/7HdDx67/IMG-1431.jpg",
                 full: "https://i.ibb.co/7HdDx67/IMG-1431.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512941572,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/v6Djrvst/IMG-1403.jpg",
                 full: "https://i.ibb.co/v6Djrvst/IMG-1403.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512955727,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/TXtTkGM/IMG-1362.jpg",
                 full: "https://i.ibb.co/TXtTkGM/IMG-1362.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512972934,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/0pvcsTD7/IMG-1266.jpg",
                 full: "https://i.ibb.co/0pvcsTD7/IMG-1266.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767512988506,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/ymLTdb3M/IMG-1245.jpg",
                 full: "https://i.ibb.co/ymLTdb3M/IMG-1245.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513008533,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/k7QtgPP/IMG-1218.jpg",
                 full: "https://i.ibb.co/k7QtgPP/IMG-1218.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513020184,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/XxdJ96np/IMG-1195.jpg",
                 full: "https://i.ibb.co/XxdJ96np/IMG-1195.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513031836,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/Pscj8jJ1/IMG-1191.jpg",
                 full: "https://i.ibb.co/Pscj8jJ1/IMG-1191.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513043053,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/zVqKFGnz/IMG-1167.jpg",
                 full: "https://i.ibb.co/zVqKFGnz/IMG-1167.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513056614,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/p6zfhQhF/IMG-1162.jpg",
                 full: "https://i.ibb.co/p6zfhQhF/IMG-1162.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513074909,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/bgHPcPGP/IMG-1146.jpg",
                 full: "https://i.ibb.co/bgHPcPGP/IMG-1146.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513088681,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/vSbKXv7/IMG-1145.jpg",
                 full: "https://i.ibb.co/vSbKXv7/IMG-1145.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513101313,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/wZ4Fxvns/IMG-1139.jpg",
                 full: "https://i.ibb.co/wZ4Fxvns/IMG-1139.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513113105,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/j9dX2JxS/IMG-1137.jpg",
                 full: "https://i.ibb.co/j9dX2JxS/IMG-1137.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513127449,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/jPhGRsQT/IMG-1115.jpg",
                 full: "https://i.ibb.co/jPhGRsQT/IMG-1115.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513140760,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/fzTTbbKh/IMG-1107.jpg",
                 full: "https://i.ibb.co/fzTTbbKh/IMG-1107.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513153304,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/8nqdPwRL/IMG-1102.jpg",
                 full: "https://i.ibb.co/8nqdPwRL/IMG-1102.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513165521,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/sJ2HHCnr/IMG-1097.jpg",
                 full: "https://i.ibb.co/sJ2HHCnr/IMG-1097.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513177626,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/TD6c6Dz6/IMG-0943.jpg",
                 full: "https://i.ibb.co/TD6c6Dz6/IMG-0943.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513189369,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/XZk33k86/IMG-0917.jpg",
                 full: "https://i.ibb.co/XZk33k86/IMG-0917.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513204220,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/gF7MjTvs/IMG-0888.jpg",
                 full: "https://i.ibb.co/gF7MjTvs/IMG-0888.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513216910,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/XfgJ5QGw/IMG-0880.jpg",
                 full: "https://i.ibb.co/XfgJ5QGw/IMG-0880.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513260809,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/8gNvk8vC/IMG-0403.jpg",
                 full: "https://i.ibb.co/8gNvk8vC/IMG-0403.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513272928,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/pgMRG7R/IMG-0288.jpg",
                 full: "https://i.ibb.co/pgMRG7R/IMG-0288.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513284717,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/zVtVYB1w/IMG-0210.jpg",
                 full: "https://i.ibb.co/zVtVYB1w/IMG-0210.jpg",
-                pin: "1234"
+                pin: ""
             },
             {
                 id: 1767513298324,
                 title: "FFD",
                 category: "Football",
+                section: "portfolio",
                 desc: "FFD Tournament",
                 src: "https://i.ibb.co/673rrmq5/IMG-0278.jpg",
                 full: "https://i.ibb.co/673rrmq5/IMG-0278.jpg",
-                pin: "1234"
+                pin: ""
             },
         ];
 
@@ -1535,6 +1835,7 @@
         const filterBtns = document.querySelectorAll('.filter-btn');
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxVideo = document.getElementById('lightbox-video'); // VIDEO ELEMENT
         const lightboxTitle = document.getElementById('lightbox-title');
         const lightboxDesc = document.getElementById('lightbox-desc');
         const lightboxDownload = document.getElementById('lightbox-download');
@@ -1544,14 +1845,24 @@
         const adminModal = document.getElementById('adminModal');
         const backToTopBtn = document.getElementById('backToTop');
         const searchInput = document.getElementById('searchInput');
+        const likeBtn = document.getElementById('likeBtn');
+        const likeCountDisplay = document.getElementById('likeCount');
+        const commentsList = document.getElementById('commentsList');
+        const commentInput = document.getElementById('commentInput');
+        const postCommentBtn = document.getElementById('postCommentBtn');
 
         let currentIndex = 0;
         let activePhotos = [...photos]; // Tracks photos currently shown (for navigation)
         let currentFilter = 'all'; // Current category filter
         let currentEvent = 'all'; // Current event filter
+        let currentSection = 'portfolio'; // 'portfolio' or 'store'
         let currentSearch = ''; // Current search text
         let selectedPhotoIds = new Set(); // Track selected photos for batch editing
         
+        // --- CONFIGURATION ---
+        const STORE_CODE = "CLIENTS"; // <--- CHANGE THIS CODE FOR YOUR CLIENTS
+        let isStoreUnlocked = false;  // State to track if user has entered code
+
         // Admin Batch Variables
         let adminBatchIndex = 0;
         let adminFilteredPhotos = [];
@@ -1587,15 +1898,45 @@
             }
         }
 
+        // --- SECTION SWITCHER ---
+        function switchMainSection(section) {
+            // Check Lock Logic for Store
+            if (section === 'store' && !isStoreUnlocked) {
+                const code = prompt("This section is private. Please enter the Access Code:");
+                if (code === STORE_CODE) {
+                    isStoreUnlocked = true;
+                    alert("Access Granted. Welcome to the Store.");
+                } else {
+                    if(code !== null) alert("Incorrect Code.");
+                    return; // Stop switching
+                }
+            }
+
+            currentSection = section;
+            
+            // Update Tab Styles
+            document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+            const activeTab = document.getElementById(`tab-${section}`);
+            if(activeTab) activeTab.classList.add('active');
+            
+            // Re-apply filters
+            filterPhotos();
+            
+            // Smooth scroll to gallery to show content changed
+            document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
+        }
+
         // --- FILTER & SEARCH LOGIC ---
         function updateFilterCounts() {
-            // Count all
-            document.getElementById('count-all').textContent = photos.length;
+            // Count all visible in current section
+            const visiblePhotos = photos.filter(p => (p.section || 'portfolio') === currentSection);
+            
+            document.getElementById('count-all').textContent = visiblePhotos.length;
             
             // Count individual categories
             const categories = ['Football', 'Basketball', 'Soccer', 'Track', 'Motorsports'];
             categories.forEach(cat => {
-                const count = photos.filter(p => p.category === cat).length;
+                const count = visiblePhotos.filter(p => p.category === cat).length;
                 const badge = document.getElementById(`count-${cat}`);
                 if(badge) badge.textContent = count;
             });
@@ -1628,6 +1969,10 @@
             // Start with all photos
             let filtered = photos;
 
+            // Apply Section Filter (Portfolio vs Store)
+            // Default to 'portfolio' if undefined
+            filtered = filtered.filter(p => (p.section || 'portfolio') === currentSection);
+
             // Apply Category Filter
             if (currentFilter !== 'all') {
                 filtered = filtered.filter(p => p.category === currentFilter);
@@ -1655,6 +2000,7 @@
             }
 
             activePhotos = filtered;
+            updateFilterCounts(); // Update counts based on section
             renderGalleryGrid();
         }
 
@@ -1662,7 +2008,7 @@
             galleryGrid.innerHTML = '';
             
             if(activePhotos.length === 0) {
-                galleryGrid.innerHTML = '<p style="text-align:center; color:#888; grid-column:1/-1; padding:40px;">No photos found matching your criteria.</p>';
+                galleryGrid.innerHTML = '<p style="text-align:center; color:#888; grid-column:1/-1; padding:40px;">No photos found in this section.</p>';
                 return;
             }
 
@@ -1671,9 +2017,15 @@
                 item.className = 'gallery-item';
                 item.onclick = () => openLightbox(index);
                 
+                // Check if it's a video
+                const isVideo = (photo.type === 'video');
+                // Check section
+                const isStore = (photo.section === 'store');
+
                 item.innerHTML = `
                     <img src="${photo.src}" alt="${photo.title}" loading="lazy">
-                    <div class="thumb-watermark"></div>
+                    ${isVideo ? '<div class="play-icon-overlay"></div>' : ''}
+                    ${isStore ? '<div class="thumb-watermark"></div>' : ''} <!-- Conditional Watermark -->
                     <div class="overlay">
                         <span class="item-category">${photo.event || photo.category}</span>
                         <span class="item-title">${photo.title}</span>
@@ -1681,6 +2033,30 @@
                 `;
                 galleryGrid.appendChild(item);
             });
+        }
+
+        // --- LOCAL STORAGE HELPERS (LIKES & COMMENTS) ---
+        function getStorageLikes() {
+            return JSON.parse(localStorage.getItem('sp_likes') || '{}');
+        }
+        function saveStorageLikes(likes) {
+            localStorage.setItem('sp_likes', JSON.stringify(likes));
+        }
+        function getStorageComments(photoId) {
+            const allComments = JSON.parse(localStorage.getItem('sp_comments') || '{}');
+            return allComments[photoId] || [];
+        }
+        function addStorageComment(photoId, text) {
+            const allComments = JSON.parse(localStorage.getItem('sp_comments') || '{}');
+            if(!allComments[photoId]) allComments[photoId] = [];
+            
+            allComments[photoId].push({
+                text: text,
+                date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString()
+            });
+            
+            localStorage.setItem('sp_comments', JSON.stringify(allComments));
+            return allComments[photoId];
         }
 
         // --- LIGHTBOX LOGIC ---
@@ -1694,16 +2070,58 @@
         function closeLightbox() {
             lightbox.classList.remove('active');
             document.body.style.overflow = 'auto';
+            // Stop video if playing
+            const videoEl = document.getElementById('lightbox-video');
+            videoEl.pause();
+            videoEl.src = ""; // Reset src to fully stop buffering
         }
 
         function updateLightboxContent() {
             const photo = activePhotos[currentIndex];
-            lightboxImg.src = photo.full;
+            const imgEl = document.getElementById('lightbox-img');
+            const videoEl = document.getElementById('lightbox-video');
+
+            // Handle Media Type
+            if (photo.type === 'video') {
+                imgEl.style.display = 'none';
+                videoEl.style.display = 'block';
+                videoEl.src = photo.full; // For video, 'full' contains the video URL
+                videoEl.load();
+                // videoEl.play(); 
+            } else {
+                videoEl.style.display = 'none';
+                videoEl.pause();
+                imgEl.style.display = 'block';
+                imgEl.src = photo.full;
+            }
+
             lightboxTitle.textContent = photo.title;
-            // Show Event Name if available, otherwise just Category
             const subTitle = photo.event ? `${photo.event} • ${photo.category}` : photo.category;
             lightboxDesc.textContent = `${subTitle} | ${photo.desc}`;
             
+            // Handle Watermark Overlay
+            const watermarkEl = document.querySelector('.lightbox-content .watermark-overlay');
+            if (photo.section === 'store') {
+                watermarkEl.style.display = 'block';
+            } else {
+                watermarkEl.style.display = 'none';
+            }
+            
+            // UPDATE LIKE BUTTON
+            const likes = getStorageLikes();
+            const isLiked = likes[photo.id];
+            
+            if(isLiked) {
+                likeBtn.classList.add('liked');
+                likeCountDisplay.textContent = "1"; // Mock count for demo
+            } else {
+                likeBtn.classList.remove('liked');
+                likeCountDisplay.textContent = "0";
+            }
+
+            // UPDATE COMMENTS
+            renderComments(photo.id);
+
             // Check for PIN protection
             if (photo.pin && photo.pin.trim() !== "") {
                 lightboxDownload.innerHTML = "🔒 Protected Download";
@@ -1714,7 +2132,57 @@
             }
         }
 
-        // ... (Prev/Next/Close functions remain same) ...
+        function renderComments(photoId) {
+            const comments = getStorageComments(photoId);
+            commentsList.innerHTML = '';
+            
+            if(comments.length === 0) {
+                commentsList.innerHTML = '<p style="color:#666; font-size:0.8rem; text-align:center; padding-top:20px;">No comments yet.</p>';
+            } else {
+                comments.forEach(c => {
+                    const el = document.createElement('div');
+                    el.className = 'comment-item';
+                    el.innerHTML = `
+                        <div class="comment-text">${c.text}</div>
+                        <span class="comment-date">${c.date}</span>
+                    `;
+                    commentsList.appendChild(el);
+                });
+            }
+            // Scroll to bottom
+            commentsList.scrollTop = commentsList.scrollHeight;
+        }
+
+        // --- BUTTON HANDLERS ---
+        
+        // Like Button
+        likeBtn.onclick = function() {
+            const photo = activePhotos[currentIndex];
+            const likes = getStorageLikes();
+            
+            if(likes[photo.id]) {
+                delete likes[photo.id];
+                likeBtn.classList.remove('liked');
+                likeCountDisplay.textContent = "0";
+            } else {
+                likes[photo.id] = true;
+                likeBtn.classList.add('liked');
+                likeCountDisplay.textContent = "1";
+            }
+            saveStorageLikes(likes);
+        };
+
+        // Post Comment
+        postCommentBtn.onclick = function() {
+            const text = commentInput.value.trim();
+            if(!text) return;
+            
+            const photo = activePhotos[currentIndex];
+            addStorageComment(photo.id, text);
+            renderComments(photo.id);
+            commentInput.value = ''; // clear input
+        };
+
         function showNext() {
             currentIndex = (currentIndex + 1) % activePhotos.length;
             updateLightboxContent();
@@ -1765,6 +2233,33 @@
             document.getElementById('adminEvent').value = ''; // Clear event
             document.getElementById('adminPin').value = '';
             document.getElementById('adminUrl').value = '';
+            document.getElementById('adminThumbUrl').value = '';
+            document.getElementById('adminVideoUrl').value = '';
+        }
+
+        function toggleAdminPinField() {
+            const section = document.getElementById('adminSection').value;
+            const pinField = document.getElementById('adminPin');
+            if(section === 'store') {
+                pinField.style.display = 'block';
+            } else {
+                pinField.style.display = 'none';
+                pinField.value = ''; // Clear pin if switching to portfolio
+            }
+        }
+
+        function toggleAdminMediaInputs() {
+            const type = document.getElementById('adminMediaType').value;
+            const imgInputs = document.getElementById('imageInputs');
+            const vidInputs = document.getElementById('videoInputs');
+            
+            if(type === 'video') {
+                imgInputs.style.display = 'none';
+                vidInputs.style.display = 'block';
+            } else {
+                imgInputs.style.display = 'block';
+                vidInputs.style.display = 'none';
+            }
         }
 
         function generateCode() {
@@ -1773,39 +2268,69 @@
             const desc = document.getElementById('adminDesc').value;
             const eventVal = document.getElementById('adminEvent').value; // Get Event
             const pin = document.getElementById('adminPin').value;
-            const urlsInput = document.getElementById('adminUrl').value;
+            const section = document.getElementById('adminSection').value;
+            const type = document.getElementById('adminMediaType').value;
             
-            if(!title || !urlsInput) {
-                alert("Please enter a title and at least one image URL");
-                return;
-            }
-
-            const urls = urlsInput.split('\n').filter(url => url.trim() !== '');
             let codeSnippet = '';
 
-            urls.forEach((url, index) => {
-                const cleanUrl = url.trim();
-                const id = Date.now() + index;
+            if (type === 'image') {
+                const urlsInput = document.getElementById('adminUrl').value;
+                if(!title || !urlsInput) {
+                    alert("Please enter a title and at least one image URL");
+                    return;
+                }
+                const urls = urlsInput.split('\n').filter(url => url.trim() !== '');
                 
-                codeSnippet += `
+                urls.forEach((url, index) => {
+                    const cleanUrl = url.trim();
+                    const id = Date.now() + index;
+                    
+                    codeSnippet += `
             {
                 id: ${id},
                 title: "${title}",
                 category: "${category}",
+                section: "${section}",
+                type: "image",
                 event: "${eventVal}",
                 desc: "${desc}",
                 src: "${cleanUrl}",
                 full: "${cleanUrl}",
                 pin: "${pin}"
             },`;
-            });
+                });
+            } else {
+                // VIDEO MODE
+                const thumbUrl = document.getElementById('adminThumbUrl').value;
+                const videoUrl = document.getElementById('adminVideoUrl').value;
+                
+                if(!title || !thumbUrl || !videoUrl) {
+                    alert("Please enter title, thumbnail URL, and video URL");
+                    return;
+                }
+                
+                const id = Date.now();
+                codeSnippet += `
+            {
+                id: ${id},
+                title: "${title}",
+                category: "${category}",
+                section: "${section}",
+                type: "video",
+                event: "${eventVal}",
+                desc: "${desc}",
+                src: "${thumbUrl}",  // Thumbnail for grid
+                full: "${videoUrl}", // Video file for player
+                pin: "${pin}"
+            },`;
+            }
 
             const output = document.getElementById('codeOutput');
             output.innerText = codeSnippet;
             output.style.display = 'block';
             
             navigator.clipboard.writeText(codeSnippet).then(() => {
-                alert(`Generated code for ${urls.length} photos! Copied to clipboard.`);
+                alert(`Generated code! Copied to clipboard.`);
             });
         }
 
@@ -1903,23 +2428,18 @@
             
             const newPin = document.getElementById('editPin').value;
             const newEvent = document.getElementById('editEvent').value; // Get new event name
+            const newSection = document.getElementById('editSection').value;
 
             // Generate the COMPLETE updated list
             const updatedPhotosList = photos.map(p => {
                 if(selectedPhotoIds.has(p.id)) {
                     // Update this photo
                     let updated = { ...p };
-                    // Only update pin if the field isn't explicitly empty (user might want to keep existing pins)
-                    // Actually, typical batch behavior: if input is empty, maybe clear it? 
-                    // Let's assume: if user types in pin box, update pin. If user types in event box, update event.
                     
                     if (newPin !== "") updated.pin = newPin; // Update/Lock
-                    // If you want to UNLOCK, the user needs to know how. 
-                    // Let's adhere to "Leave blank to unlock" IF they specifically interact with it?
-                    // Simpler: Just override. If empty string is passed, it unlocks.
-                    updated.pin = newPin; 
-
                     if (newEvent !== "") updated.event = newEvent;
+                    if (newSection !== "") updated.section = newSection;
+                    
                     return updated;
                 }
                 return p;
@@ -1932,6 +2452,8 @@
         id: ${p.id},
         title: "${p.title}",
         category: "${p.category}",
+        section: "${p.section || 'portfolio'}",
+        type: "${p.type || 'image'}",
         event: "${p.event || ''}", 
         desc: "${p.desc}",
         src: "${p.src}",
